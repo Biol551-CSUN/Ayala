@@ -1,7 +1,7 @@
 # Nicole Anahi Ayala
 ## _WHAT YOU NEED TO KNOW_
 
-![First of all, please look at this cat!!] (https://wholesomecatsgame.fandom.com/wiki/Lil_Sprout?file=Lil_Sprout.jpeg)
+[First of all, please look at this cat!!] (https://wholesomecatsgame.fandom.com/wiki/Lil_Sprout?file=Lil_Sprout.jpeg)
 
 ### Purpose of this Repo
 * Displays my first script and data assignments shown in files "Scripts" and "Data" within Week_02 folder
@@ -24,7 +24,7 @@
 
 ![Chemistry Labs](https://upload.wikimedia.org/wikipedia/commons/8/83/Chemistry-lab.JPG)
 
-![Reading as a Plant Mom] (https://plantmomcare.com/
+[Reading as a Plant Mom] (https://plantmomcare.com/
 
 
 ### THE END
