@@ -1,4 +1,4 @@
-### Tidy Tuesday #1
+### still learning how to plot
 ### Created by: Nicole Ayala
 ### Created on: 2023-02-14
 #####################################################################
@@ -6,6 +6,7 @@
 library(palmerpenguins)
 library(tidyverse)
 library(devtools)
+library(beyonce)
 library(here)
 ####### LOAD DATA #######
 glimpse(penguins) # the data part of the package is called penguins
@@ -33,5 +34,5 @@ ggplot(data = penguin_log,
                                   color = "red"),
         panel.background = element_rect(fill = "beige"))
 
-      
+ggsave(here("Week_04","Output","HomeworkAssignment2023-02-14.png"))
        
