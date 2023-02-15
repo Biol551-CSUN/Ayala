@@ -7,7 +7,7 @@ library(tidyverse)
 library(palmerpenguins)
 library(here)
 library(ggpubr)
-library('devtools')
+library(devtools)
 ### time to use ggplot ###### 
 glimpse(penguins)
 ggplot(data = penguins, 
@@ -24,6 +24,6 @@ geom_boxplot() +
         panel.background = element_rect(fill = "beige"))
 
    
-    ggsave(here("Week_03","Output","penguin2.png"))
+    ggsave(here("Week_03","Output","groupbasedplot.png"))
 
                    
