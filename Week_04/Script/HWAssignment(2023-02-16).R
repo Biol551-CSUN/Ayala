@@ -28,7 +28,7 @@ Chemdata_long<-Chemdata_clean %>%
   group_by(Variables, Season, Zone ) %>% # group by everything we want 
   summarise(Param_means = mean(Values, na.rm = TRUE), # get mean 
             Param_vars = var(Values, na.rm = TRUE), # get variance
-            Param_stdv = sd(Values, na.rm = TRUE)) # getting the standard deviation
+            Param_stdv = sd(Values, na.rm = TRUE)) %>% # getting the standard deviation
 
 
 write_csv(here("Week_04","Output","InClassDensityPlot(2023-02-16).csv")) # export as a csv to the right folder
