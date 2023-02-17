@@ -47,6 +47,6 @@ chemplot<-Chemdata %>% # make sure to keep putting a pipeline & name this chemda
   theme(axis.title = element_text(size = 14, color = "green"),
         panel.background = element_rect(fill = "white"))
         
-  
+ggsave(here("Week_04","Output","HomeworkAssignment2023-02-16.png"))
 chemplot
 
