@@ -22,4 +22,5 @@ Chemdata_clean<-Chemdata %>%
               values_from = mean_vals) # notice it is now mean_vals as the col name
   
   View(Chemdata_clean)
+  write_csv(here("Week_04","Output","summary.csv"))  # export as a csv to the right folder
   
