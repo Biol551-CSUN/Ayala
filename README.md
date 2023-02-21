@@ -1,30 +1,57 @@
-# Nicole Anahi Ayala
-## _WHAT YOU NEED TO KNOW_
+### Nicole Anahi Ayala
+#### _What You Need to Know for BIOL 551/L Computer Modeling in Biology_
 
-[First of all, please look at this cat!!](https://wholesomecatsgame.fandom.com/wiki/Lil_Sprout?file=Lil_Sprout.jpeg)
+#### *Purpose of this Repository*
+* Displays links to weekly lectures and lab assignments shown in their respective weekly folders.
+* Shows the syllabus, our master calendar for this class, and guideleines for our group and individual projects.
+* Practice new skills such as using R code, Markdown and Github. 
 
-### Purpose of this Repo
-* Displays my first script and data assignments shown in files "Scripts" and "Data" within Week_02 folder
-* Folder Output will not show up until there are files within it.
-* This repository is a first assignment completed during Week 2 lab.
-* Practice new skills such as using Markdown and Github. 
+#### *Syllabus, Calendar, and Project Guidelines*
 
-### A Little Bit About Me
-# * ACADEMICS
-  * I am an undergraduate student who is pursuing a medical based career but has an interest in research.
+
+
+
+
+#### *Week 1*
+
+
+
+
+#### *Week 2*
+
+
+
+
+
+#### *Week 3*
+
+
+
+
+
+#### *Week 4*
+
+
+
+
+
+#### *Week 5*
+
+
+
+
+
+
+####  My Background
+### * ACADEMICS
+  * I am an undergraduate student who is pursuing a medical based career but has an interest in plant biology research 
+       - I have worked with soybeans.
   * I am double majoring in Cell & Molecular Biology and Biotechnology.
-  * I am in the Co-Ed Medical Fraternity on campus.
-# * RECENT DISCOVERIES, TRIUMPHS AND EPIPHANIES
-  * I actually **_despise_** the smell of seafood but I **_love_** eating seafood.
-  * I barely learned how to drive and got my license last August in 2022.
-  * I am enjoying this class so far and excited to learn more about R!
-  
-### PICTURES THAT ARE LITERALLY MY LIFE RIGHT NOW
-![Doggo](https://upload.wikimedia.org/wikipedia/commons/1/18/Dog_Breeds.jpg)
-
-![Chemistry Labs](https://upload.wikimedia.org/wikipedia/commons/8/83/Chemistry-lab.JPG)
-
-[Reading as a Plant Mom](https://plantmomcare.com/)
+  * I am in the co-ed medical fraternity, Phi Delta Epsilon and in the sorority Tri Delta.
+ 
 
 
-### THE END
+#### Miscellaneous Links
+* [How to become a plant mom](https://bloomscape.com/plant-care/beginners-guide-houseplants/)
+* [Listen to my studying playlist](https://open.spotify.com/playlist/7Ev6OVR8me6SZtPTBJ3VxI)
+* [Here are some cute biology lockscreens] (https://www.pinterest.com/pin/729231364655785420/)
