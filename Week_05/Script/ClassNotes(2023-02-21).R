@@ -23,7 +23,14 @@ View(Envirodata_wide)
 
 Fulldata_left<- left_join(TPCdata, Envirodata_wide) %>%
   relocate(where(is.numeric), .after = where(is.character)) # relocate all the numeric data after the character data
-  join_by(site.letter) 
+
+Thinkdata <- Fulldata_left %>%
+  pivot_longer(cols = E:substrate.cover, # cols wanted to pivot
+               names_to= "variables", # Name of new cols with all column names
+               values_to= "values") %>%
+  group_by(site.letter, variables)%>%
+  sumamrise(means_vals= mean(values, na.rm=TRUE),
+            var_vals= var(values, na.rm= TRUE))
   
  head(Fulldata_left)
 
