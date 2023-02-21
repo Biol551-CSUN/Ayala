@@ -53,4 +53,4 @@
 #### Miscellaneous Links
 * [How to become a plant mom](https://bloomscape.com/plant-care/beginners-guide-houseplants/)
 * [Listen to my studying playlist](https://open.spotify.com/playlist/7Ev6OVR8me6SZtPTBJ3VxI)
-* [Here are some cute biology lockscreens] (https://www.pinterest.com/pin/729231364655785420/)
+* [Here are some cute biology lockscreens](https://www.pinterest.com/pin/729231364655785420/)
