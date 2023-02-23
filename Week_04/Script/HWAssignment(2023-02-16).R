@@ -9,6 +9,9 @@ library(beyonce)
 library(ggridges)
 
 ### Load Data #####
+Chemdata<-read_csv(here("Week_04","Data", "chemicaldata_maunalua.csv"))
+View(Chemdata)
+glimpse(Chemdata)
 Chemdata_clean<-Chemdata %>% # remember the PIPE!!!!
   filter(complete.cases(.)) #filters out everything that is not a complete row
 
@@ -38,8 +41,8 @@ View(Chemdata_long) # this upper section is related to the csv file, plot info i
 
           
 chemplot<-Chemdata %>% # make sure to keep putting a pipeline & name this chemdata separate from chemdata_long!
-  drop_na()%>% # ALWAYS ADD THE DROP_NA TO REMOVE NAs IN YOUR PLOT
-  mutate(pH_log = log(pH))%>% # PARANTHESE! Be mindful of what you name or rename (pH)
+  drop_na() %>% # ALWAYS ADD THE DROP_NA TO REMOVE NAs IN YOUR PLOT
+  mutate(pH_log = log(pH)) %>% # PARANTHESE! Be mindful of what you name or rename (pH)
   ggplot(aes(x = pH_log, y = Zone, fill = Season))+ 
   geom_density_ridges2() +
   labs(x = "Season", y = "Zone", title = "Each Zone's Environmental Differences within Basicity and Acidity During the Spring Season")+
