@@ -7,6 +7,9 @@ library(tidyverse)
 library(here)
 
 ## Load Data #####
+ChemData<-read_csv(here("Week_04","Data", "chemicaldata_maunalua.csv"))
+View(ChemData)
+glimpse(ChemData)
 Chemdata_clean<-Chemdata %>%
   drop_na() %>% #filters out everything that is not a complete row
   separate(col = Tide_time, # choose the tide time col
@@ -23,4 +26,5 @@ Chemdata_clean<-Chemdata %>%
   
   View(Chemdata_clean)
   write_csv(here("Week_04","Output","summary.csv"))  # export as a csv to the right folder
+  
   
