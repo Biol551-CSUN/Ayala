@@ -5,34 +5,53 @@
 ### Load libraries #######
 library(tidyverse)
 library(here)
+library(cowsay)
 
 #### LOADING DATA ######
 # Environmental data frome each site
-Envirodata<-read_csv(here("Week_05","Data","site.characteristics.data.csv"))
+EnviroData<-read_csv(here("Week_05","Data","site.characteristics.data.csv"))
+
+View(Envirodata)
+glimpse(Envirodata)
 
 # Thermal performance data 
-TPCdata<-read_csv(here("Week_05","Data","Topt_data.csv"))
+TPCData<-read_csv(here("Week_05","Data","Topt_data.csv"))
 
 
-Envirodata_wide <- Envirodata %>%
-  pivot_wider(names_from = parameters.measured, # pivot the data wider
-              values_from = values) %>%
-  arrange(site.letter) # arrange the dataframe by site 
-
+EnviroData_wide <- EnviroData %>% 
+  pivot_wider(names_from = parameter.measured,
+              values_from = values)
 View(Envirodata_wide)
 
-Fulldata_left<- left_join(TPCdata, Envirodata_wide) %>%
+FullData_left<- left_join(TPCData, EnviroData_wide) %>%
   relocate(where(is.numeric), .after = where(is.character)) # relocate all the numeric data after the character data
 
-Thinkdata <- Fulldata_left %>%
+head(FullData_left)
+
+ThinkData <- FullData_left %>%
   pivot_longer(cols = E:substrate.cover, # cols wanted to pivot
                names_to= "variables", # Name of new cols with all column names
                values_to= "values") %>%
   group_by(site.letter, variables)%>%
-  sumamrise(means_vals= mean(values, na.rm=TRUE),
+  summarise(means_vals= mean(values, na.rm=TRUE),
             var_vals= var(values, na.rm= TRUE))
   
- head(Fulldata_left)
+ 
+########  Make 1 tibble #####
+T1 <- tibble(Site.ID = c("A", "B", "C", "D"), 
+             Temperature = c(14.1, 16.7, 15.3, 12.8))
+T1
 
+left_join(T1,T2) # these two have the same NA
+right_join(T2,T1) # these two have the same NA 
+inner_join(T1,T2)
+full_join(T1,T2) # same thing as merging
+semi_join(T1,T2) #only looks at the first column of data set
+anti_join(T1,T2) # only keeps missing columns
+######## Make another tibble #####
+T2 <-tibble(Site.ID = c("A", "B", "D", "E"), 
+            pH = c(7.3, 7.8, 8.1, 7.9))
+T2
 
+say("hello", by = "monkey")
 
