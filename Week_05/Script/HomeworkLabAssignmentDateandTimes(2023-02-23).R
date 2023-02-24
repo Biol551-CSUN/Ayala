@@ -16,7 +16,7 @@ install_github("Gibbsdavidl/CatterPlots") # install the data
 # Depth data
 DepthData<-read_csv(here("Week_05","Data","DepthData.csv")) 
 DepthData<-DepthData %>%
-  mutate(date = mdy_hm(date)) # change date format to mdy_hm
+  mutate(Date = mdy_hm(Date)) # change date format to mdy_hm
 
 View(DepthData)
 glimpse(DepthData)
@@ -26,19 +26,18 @@ glimpse(DepthData)
 CondData<-read_csv(here("Week_05","Data","CondData.csv"))
 CondData_iso<-CondData %>%
   #Date = as.character(Date), # change a column into a character
-  mutate(date = mdy_hm(date) %>% # change date format to mdy_hm
-  date = round_date(date, "10 seconds")) # round to nearest 10 seconds) 
+  mutate(Date = mdy_hm(Date) %>% # change date format to mdy_hm
+           Date = round_date(Date, "10 seconds")) # round to nearest 10 seconds) 
 
 Cond_depth_data <- inner_join(CondData_iso, DepthData)
 View(Cond_depth_data)
 
 
 
-          
 
-  
+
+
 
 ## plotting time with averaged data ##
-
 
 
