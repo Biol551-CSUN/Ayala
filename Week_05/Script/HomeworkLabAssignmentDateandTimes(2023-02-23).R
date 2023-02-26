@@ -1,6 +1,7 @@
 ### practicing using lubridate with data from Becker and Silbiger (2022)
 ### Created by: Nicole Ayala
 ### Created on: 2023-02-23
+### Updated on: 2023-02-26
 #####################################################################
 ### Load libraries #######
 library(tidyverse)
@@ -8,8 +9,6 @@ library(here)
 library(lubridate)
 library(devtools)
 library(ggridges)
-
-install_github("Gibbsdavidl/CatterPlots") # install the data
 
 #### Loading Data ###
 
@@ -30,14 +29,6 @@ CondData_iso<-CondData %>%
            Date = round_date(Date, "10 seconds")) # round to nearest 10 seconds) 
 
 Cond_depth_data <- inner_join(CondData_iso, DepthData)
-View(Cond_depth_data)
-
-
-
-
-
-
-
-## plotting time with averaged data ##
+View(Cond_depth_data) # check updated data to be accurate with all corresponding dates, ahd an issue of getting dates as NAs without piping it into itself or calling it something else
 
 
