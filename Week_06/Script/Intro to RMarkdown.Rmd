@@ -1,0 +1,57 @@
+---
+title: "Class Notes Intro to RMarkdown"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+
+## RMARKDOWN BASICS
+- Headers
+1. # HEADER 1
+2. ## HEADER 2
+3. ### HEADER 3
+4. #### HEADER 4
+5. ##### HEADER 5
+6. ###### HEADER 6
+
+- Text
+1. Bold 
+I **love** RMarkdown.
+2. Italics
+Italics
+I *love* RMarkdown.
+3. Add a new line
+You need to hit the space bar twice after a line if you want the following text to be on a new line.
+
+- Lists
+
+First type
+- item 1
+- item 2
+- item 3
+
+Second type
+1. item 1
+1. item 2
+1. item 3
+
+- Images
+![CSUN logo](https://www.csun.edu/sites/default/files/styles/slideshow_full/public/field_image/field_slideshow_slides/banner_identity02.png?itok=yItY0d62)
+
+- Links
+[Click here](https://silbigerlab.com)
+
+- Code Chunks
+1. You can add a code chunk by pressing
+2. the keyboard shortcut Ctrl + Alt + I
+3. Click Code at the top of RStudio then insert chunk.
