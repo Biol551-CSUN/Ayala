@@ -46,6 +46,7 @@ penguins %>% # using the penguin dataset
        y = "Bill Depth (mm)",
        color = "Species")+
   theme_bw()
+devtools::install_github("sctyner/memer")
 
 ```
 

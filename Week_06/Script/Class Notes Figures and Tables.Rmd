@@ -70,11 +70,14 @@ knitr::opts_chunk$set(echo = TRUE,
 
 
 ```{r}
+library(kableExtra)
 #make a table in r
 penguins %>%
   group_by(species) %>%
   summarise(billmean = mean(bill_length_mm, na.rm = TRUE)) %>%
-  kbl()  # make it a kable table
-
+  kbl() %>% # make it a kable table
+  kable_classic()%>% 
+  row_spec(2, bold = T, color = "white", background = "red") %>%
+  kable_styling(full_width = FALSE)
 ```
 
