@@ -1,0 +1,80 @@
+---
+title: "Class Notes 2023-02-02"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output:
+   html_document:
+    toc: TRUE
+    toc_float: TRUE
+   
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning =FALSE,
+                      fig.path = "../Output/")
+```
+
+Today we are going to work with the penguin data to learn more about *RMarkdown*
+
+
+## Load Libraries
+```{r}
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+library(beyonce)
+library(kableExtra)
+
+```
+
+## Inspect the data
+```{r intro penguin plot, fig.asp= 1.2, fig.align='center', fig.cap="This is my penguin figure", dev='pdf', echo=FALSE}
+# fig.width=3,fig.height=5, fig.align='center' makes image bigger/smaller/to righ, center or left
+# makes it smaller 50% half sized image out.width="50%" or out.height for aspect ratio changes
+glimpse(penguins) # look at the penguin data
+
+# time to plot
+penguins %>% # we're going to sue this data set and name it as penguins
+  ggplot(aes(x = bill_length_mm,
+             y = bill_depth_mm,
+             color = species)) +
+  
+   geom_point() +
+   geom_smooth(method = "1m") + # add linear regression
+  labs(x = " Bill Length ", y = "Bill Depth", title =  "Bill Depth versus  Bill Length in Various Penguin Species")+
+            scale_fill_manual(values = beyonce_palette(2)) +
+  theme(axis.title = element_text(size = 14, color = "purple"),
+        panel.background = element_rect(fill = "white"))
+```
+
+```{r}
+# How to save the plot into Output and Rmd file in Script
+# set up; {r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.path = "../output/")
+# you can set it up as a jpeg, pdf, png
+# dev="pdf"
+# fig.cap= make a caption
+
+```
+## How to make a table  
+
+| Time  | Session | Topic    |
+|:---|:----:|------:|
+| _left_ | _center_| _right_ |
+| 01:00  | 1       | Anatomy |
+| 01:50  |         | *Break* |
+| 02:00  | 2       | Tables  |
+| 02:45  |         | *Break* |
+
+
+```{r}
+#make a table in r
+penguins %>%
+  group_by(species) %>%
+  summarise(billmean = mean(bill_length_mm, na.rm = TRUE)) %>%
+  kbl()  # make it a kable table
+
+```
+
