@@ -1,0 +1,71 @@
+---
+title: "HW Assignment Week 6"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+  toc: TRUE
+  toc_float: TRUE
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning =FALSE,
+                      fig.path = "../Output/")
+```
+Here is my **beautiful** plot and table using RMarkdown
+
+
+## Load Libraries
+```{r}
+### Load libraries #######
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+library(kableExtra)
+```
+
+## List of what is in here:
+- First Inspect Your Data Set - _penguins_
+- Next make a plot
+- Finally make a table
+
+## Here is my *plot* ~
+
+```{r Penguin Species and their Log Bill Length, fig.asp= 1.2, fig.align='center', fig.cap="Shown here is the correlation between various penguin species and their logarithmic bill length measurements in (mm). ", dev='pdf', echo=FALSE}
+### Load Data #####
+
+
+penguins %>%
+  drop_na() %>% # filters out everything that is not considered complete
+  ggplot(mapping = aes(x = species,
+                       y = log(bill_length_mm),
+                       color = species)) +
+  geom_tile() + # a type of heat map func.
+  labs(x = "Species",
+       y = "Bill Length",
+       fill = "species",
+       title = "Penguin Species and their Log of Bill Lengths (mm)") +
+  theme(plot.title = element_text(hjust = 2)) + # centers plot title
+  theme_classic() +
+ theme(axis.title = element_text(size = 14, color = "plum"),
+        panel.background = element_rect(fill = "white")) # sets some parameters  to respective colors
+```
+## Here is my *table* ~
+
+```{r}
+library(kableExtra)
+                   # make a table in r studio
+penguins %>%
+  group_by(species) %>%
+  summarise(Mean = mean(bill_length_mm, na.rm = TRUE), # get mean 
+            Variance = var(bill_length_mm, na.rm = TRUE), # get variance
+            Standard_Deviation = sd(bill_length_mm, na.rm = TRUE)) %>% # getting the standard deviation  
+  kbl() %>% # make it a kable table
+  kable_styling()%>% 
+  row_spec(2, bold = T, color = "wheat", background = "plum") %>%
+  kable_styling(full_width = FALSE)
+```
+
+
