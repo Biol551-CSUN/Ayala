@@ -2,29 +2,77 @@
 title: "My First Official Map"
 author: "Nicole Ayala"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
 ---
 
+# Loading the libraries
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+
+### load libraries ###
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(here)
+library(ggplot2)
+library(mapproj)
+library(maps)
+library(mapdata)
+library(tidytuesdayR)
+
+```
+# Inspecting the data
+```{r}
+### inspect the data ###
+meteorites<-read.csv(here("Week_07","Data","meteorites.csv")) # Read in data on meteorites
+glimpse(meteorites) # looking at my data
+View(meteorites)
+
+
+plastics<-read.csv(here("Week_07","Data","plastics.csv")) # Read in data on plastic pollution
+glimpse(plastics) # looking at my data
+View(plastics)
+
+
+```
+## Making a Map of the Amount of __Meteorites__ Seen in the Past 30 Years
+```{r}
+# Time to look at the meteorites data
+head(meteorites)               
+
+states<-map_data("state") 
+# get data for states
+head(states)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+meteor<-meteorites %>%
+  filter(mass>"2000.0" & fall != "fell") %>% # filter out mass less than 2000 lbs
+  mutate(after_1993=ifelse(year>1973,"After 1993","Before 1993")) # only look at the last 30 years
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+View(meteor)
+ggplot()+
+  geom_polygon(data = states, 
+               aes(x = long, # x is always LONGITUDE
+                   y = lat, # y is always LATITUTDE
+                   group = group, # ALWAYS SET GROUP = GROUP
+                   fill = region)) +
+  geom_point(data= meteor,
+             aes(x= long,
+                 y= lat),
+             color = "tan",
+             alpha = 2) +
+  guides(fill = FALSE) + # to not get hundreds of colors 
+  facet_wrap(~fall) +
+   labs(x= "Longitude",
+       y= "Latitude",
+       title= "Meteorites Seen Throughout the World Over 2000 Pounds")+
+  theme_gray() + # makes it look simple and clean with white grid lines
+  theme(panel.background = element_rect(fill = "gray")) 
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
