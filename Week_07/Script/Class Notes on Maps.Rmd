@@ -2,7 +2,10 @@
 title: "Intro to Maps"
 author: "Nicole Ayala"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -101,6 +104,21 @@ ggplot()+
 # How to Make a Map of Just California
 ```{r}
 
+# Time to look at the county data
+head(counties)[1:3,] # only showing the first 3 rows for space                  
+head(popdata) # Look at the county data
+
+# Need to add multiple layers of data
+
+CApopcounty<-popdata %>%
+  select("subregion" = County, Population)  %>% # rename the county col
+  inner_join(counties) %>%
+  filter(region == "california") # some counties have same names in other states
+head(CApopcounty)
+
+# Add a Layer of Points using geom_point
+# when building up with datasets please start with the map before adding any other points 
+
 head(states) # Use the states dataset 
 
 
@@ -109,7 +127,7 @@ CA_data<-states %>%
   filter(region == "california") 
 
 ggplot()+
-geom_polygon(data = CApop_county, # use the specific data set
+geom_polygon(data = CApopcounty, # use the specific data set
              aes(x = long, # longitude
                  y = lat,  # latitude
                  group = group, # DONT FORGET THIS
@@ -127,20 +145,6 @@ geom_polygon(data = CApop_county, # use the specific data set
   ggsave(here("Week_07","Output","CAMap.pdf"))
 
 
-# Time to look at the county data
-head(counties)[1:3,] # only showing the first 3 rows for space                  
-head(popdata) # Look at the county data
-
-# Need to add multiple layers of data
-
-CApop_county<-popdata %>%
-  select("subregion" = County, Population)  %>% # rename the county col
-  inner_join(counties) %>%
-  filter(region == "california") # some counties have same names in other states
-head(CApop_county)
-
-# Add a Layer of Points using geom_point
-# when building up with datasets please start with the map before adding any other points
  
 
 ```
