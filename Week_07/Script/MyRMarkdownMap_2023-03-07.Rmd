@@ -34,10 +34,6 @@ glimpse(meteorites) # looking at my data
 View(meteorites)
 
 
-plastics<-read.csv(here("Week_07","Data","plastics.csv")) # Read in data on plastic pollution
-glimpse(plastics) # looking at my data
-View(plastics)
-
 
 ```
 ## Making a Map of the Amount of __Meteorites__ Seen in the Past 30 Years
@@ -45,9 +41,15 @@ View(plastics)
 # Time to look at the meteorites data
 head(meteorites)               
 
+world<-map_data("world") # get data for the entire world
+head(world)
+
 states<-map_data("state") 
 # get data for states
 head(states)
+
+usa<-map_data("usa") # get data for the USA
+head(usa)
 ```
 
 
@@ -58,7 +60,7 @@ meteor<-meteorites %>%
 
 View(meteor)
 ggplot()+
-  geom_polygon(data = states, 
+  geom_polygon(data = world, 
                aes(x = long, # x is always LONGITUDE
                    y = lat, # y is always LATITUTDE
                    group = group, # ALWAYS SET GROUP = GROUP
@@ -66,13 +68,13 @@ ggplot()+
   geom_point(data= meteor,
              aes(x= long,
                  y= lat),
-             color = "tan",
-             alpha = 2) +
+             color = "black",
+             alpha = 1) +
   guides(fill = FALSE) + # to not get hundreds of colors 
   facet_wrap(~fall) +
    labs(x= "Longitude",
        y= "Latitude",
        title= "Meteorites Seen Throughout the World Over 2000 Pounds")+
-  theme_gray() + # makes it look simple and clean with white grid lines
-  theme(panel.background = element_rect(fill = "gray")) 
+  theme_minimal() + # makes it look simple and clean with white grid lines
+  theme(panel.background = element_rect(fill = "darkseagreen")) 
 ```
