@@ -8,7 +8,7 @@ output:
     toc_float: TRUE
 ---
 
-# Loading the libraries
+# *Loading the libraries*
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
@@ -26,7 +26,7 @@ library(mapdata)
 library(tidytuesdayR)
 
 ```
-# Inspecting the data
+# *Inspecting the data*
 ```{r}
 ### inspect the data ###
 meteorites<-read.csv(here("Week_07","Data","meteorites.csv")) # Read in data on meteorites
@@ -36,7 +36,7 @@ View(meteorites)
 
 
 ```
-## Making a Map of the Amount of __Meteorites__ Seen in the Past 30 Years
+# Making a Map of the Amount of __Meteorites__ Seen in the Past *30 Years*
 ```{r}
 # Time to look at the meteorites data
 head(meteorites)               
