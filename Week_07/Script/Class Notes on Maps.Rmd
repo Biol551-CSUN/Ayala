@@ -1,0 +1,150 @@
+---
+title: "Intro to Maps"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+# LEARNING HOW TO CREATE A MAP
+
+Today we are going to leanr how to create a map
+
+
+# Load Libraries
+```{r}
+library(tidyverse)
+library(here)
+library(maps)
+library(mapdata)
+library(mapproj)
+```
+
+# Inspect the data
+```{r}
+
+popdata<-read.csv(here("Week_07","Data","CApopdata.csv")) # Read in data on population in California by county
+
+stars<-read.csv(here("Week_07","Data","stars.csv")) # read in data on number of sea stars at different field sites
+
+world<-map_data("world") # get data for the entire world
+head(world)
+
+usa<-map_data("usa") # get data for the USA
+head(usa)
+
+italy<-map_data("italy") # get data for italy
+head(italy)
+
+states<-map_data("state") 
+# get data for states
+head(states)
+
+counties<-map_data("county")
+
+```
+
+## Structure of the Data 
+
+### 1. Longitude
+ - Longitude is long.
+ - Things to the west of the prime meridian are negative
+
+### 2. Latitude
+  - Latitude is lat.
+  - Measures left to right
+  
+### 3. Order
+  - This shows which order ggplot should connect the dots
+
+### 4. Region and Subregion
+  - Tells what region or subregion a set of points surrounds
+
+### 5. Group
+  - This is very important! 
+  - ggplot2’s functions can take a group argument which controls (amongst other things) whether adjacent points should be connected by lines. If they are in the same group, then they get connected, but if they are in different groups then they don’t. Essentially, having to points in different groups means that ggplot “lifts the pen” when going between them.
+
+# Make a Map of the World
+```{r}
+ggplot()+
+  geom_polygon(data = world, 
+               aes(x = long, # x is always LONGITUDE
+                   y = lat, # y is always LATITUTDE
+                   group = group, # ALWAYS SET GROUP = GROUP
+                   fill = region),
+               color = "plum3") +
+  guides(fill = FALSE) + # to not get hundreds of colors 
+  theme_light() + # makes it look simple and clean with white grid lines
+  theme(panel.background = element_rect(fill = "darkblue")) +
+   coord_map(projection = "mercator",
+   #coord_map(projection = "sinusoidal",
+            xlim = c(-180,180))
+         
+
+  
+  
+```
+
+
+
+
+# If You Forgot About group = group
+```{r}
+ggplot()+
+  geom_polygon(data = world, aes(x = long, y = lat))
+```
+# How to Make a Map of Just California
+```{r}
+
+head(states) # Use the states dataset 
+
+
+# Make a map :)
+CA_data<-states %>%
+  filter(region == "california") 
+
+ggplot()+
+geom_polygon(data = CApop_county, # use the specific data set
+             aes(x = long, # longitude
+                 y = lat,  # latitude
+                 group = group, # DONT FORGET THIS
+                 fill = Population),
+             color = "orange") +
+   geom_point(data = stars, # add a point at all my sites
+             aes(x = long,
+                 y = lat,
+                 size = star_no))+ # make size noticeable, color is also possible
+  coord_map()+
+  theme_light() +
+  scale_fill_gradient(trans = "log10") +
+  labs(size = "# stars/m2")
+ 
+  ggsave(here("Week_07","Output","CAMap.pdf"))
+
+
+# Time to look at the county data
+head(counties)[1:3,] # only showing the first 3 rows for space                  
+head(popdata) # Look at the county data
+
+# Need to add multiple layers of data
+
+CApop_county<-popdata %>%
+  select("subregion" = County, Population)  %>% # rename the county col
+  inner_join(counties) %>%
+  filter(region == "california") # some counties have same names in other states
+head(CApop_county)
+
+# Add a Layer of Points using geom_point
+# when building up with datasets please start with the map before adding any other points
+ 
+
+```
+
+
+
+  
