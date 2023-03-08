@@ -50,6 +50,7 @@ head(states)
 
 usa<-map_data("usa") # get data for the USA
 head(usa)
+
 ```
 
 
@@ -63,18 +64,21 @@ ggplot()+
   geom_polygon(data = world, 
                aes(x = long, # x is always LONGITUDE
                    y = lat, # y is always LATITUTDE
-                   group = group, # ALWAYS SET GROUP = GROUP
-                   fill = region)) +
+                   group = group ),
+               fill = "white") + # ALWAYS SET GROUP = GROUP
+               
   geom_point(data= meteor,
              aes(x= long,
                  y= lat),
-             color = "black",
-             alpha = 1) +
+             color = "burlywood4",
+             alpha = 0.3) +
   guides(fill = FALSE) + # to not get hundreds of colors 
   facet_wrap(~fall) +
    labs(x= "Longitude",
        y= "Latitude",
        title= "Meteorites Seen Throughout the World Over 2000 Pounds")+
-  theme_minimal() + # makes it look simple and clean with white grid lines
-  theme(panel.background = element_rect(fill = "darkseagreen")) 
+  theme_bw() + # makes it look simple and clean with white grid lines
+  theme(panel.background = element_rect(fill = "dodgerblue4")) 
+
+ggsave(here("Week_07","Output","MeteorsAroundtheWorld.pdf"))
 ```
