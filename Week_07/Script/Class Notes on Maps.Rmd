@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # LEARNING HOW TO CREATE A MAP
 
-Today we are going to leanr how to create a map
+Today we are going to learn how to create a map
 
 
 # Load Libraries
