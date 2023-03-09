@@ -1,0 +1,100 @@
+---
+title: "Class Notes Maps Part II"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+### LOAD LIBRARIES ###
+library(ggmap)
+library(tidyverse)
+library(here)
+library(ggsn)
+library(ggplot2)
+library(lubridate)
+library(data.table)
+library(ggrepel)
+library(dplyr)
+```
+
+```{r}
+
+register_google(key ="AIzaSyCw_Myi6T_9poyB_ROqlnybPwGG5ViGksU", write = TRUE) ### use your own API
+#IMPORTANT don't put your key to github!! I usually save mine in a text file and import it each time
+# Setting write = TRUE will write the API key to your R environment so that you do not have to re register it each time
+```
+## Intro to Maps Using a Key - Oahu Example
+```{r}
+### LOAD DATA ###
+ChemData<-read_csv(here("Week_07","Data","chemicaldata_maunalua.csv"))
+glimpse(ChemData)
+
+Oahu<-get_map("Oahu") # get a basemap from google maps, put in a location
+ggmap<-get_map("Oahu") # Make a data frame of lon and lat coordinates
+
+WP<-data.frame(lon = -157.7621, lat = 21.27427) # coordinates for Wailupe
+
+Map1<-get_map(WP) # Get base layer
+```
+```{r}
+ggmap(Map1) # plot it
+Map1<-get_map(WP,zoom = 17) # zoom argument (3-20) 3 being continent level and 20 being roughly single building level
+ggmap(Map1)
+Map1<-get_map(WP,zoom = 17, maptype = "satellite") # using satellite
+ggmap(Map1)
+```
+## Different Map Type Aesthetics: Watercolor 
+
+```{r}
+Map1<-get_map(WP,zoom = 17, maptype = "watercolor") # looks aesthetic
+ggmap(Map1)
+```
+## Different Map Type Aesthetics: Satellite Including Scalebar
+```{r}
+Map1<-get_map(WP,zoom = 17, maptype = "satellite") 
+ggmap(Map1) +
+  geom_point(data = ChemData,
+             aes(x = Long, y = Lat, color = Salinity),
+             size = 4) +
+  scale_color_viridis_c() + # puts colorful dots
+  scalebar( x.min = -157.766, x.max = -157.758, # adds a scale bar
+           y.min = 21.2715, y.max = 21.2785, # x and y max/min put the csalebar on different locations on the map
+            dist = 250, dist_unit = "m", model = "WGS84", 
+            transform = TRUE, st.color = "white",
+            box.fill = c("blue", "white"))
+```
+## Map Without Scalebar
+```{r}
+
+Map1<-get_map(WP,zoom = 17, maptype = "satellite") 
+ggmap(Map1)+
+  geom_point(data = ChemData,
+             aes(x = Long, y = Lat, color = Salinity),
+             size = 4) +
+  scale_color_viridis_c()
+# no scale bar
+
+```
+
+## How to Find Exact Latitude and Longitudes of a Location
+```{r}
+geocode("the white house")
+## # A tibble: 1 x 2
+##     lon   lat
+##   <dbl> <dbl>
+## 1 -77.0  38.9
+geocode("California State University, Northridge")
+## # A tibble: 1 x 2
+##     lon   lat
+##   <dbl> <dbl>
+## 1 -119.  34.2
+```
+
