@@ -27,7 +27,7 @@ library(dplyr)
 
 ```{r}
 
-register_google(key ="AIzaSyCw_Myi6T_9poyB_ROqlnybPwGG5ViGksU", write = TRUE) ### use your own API
+register_google(key ="", write = TRUE) ### use your own API
 #IMPORTANT don't put your key to github!! I usually save mine in a text file and import it each time
 # Setting write = TRUE will write the API key to your R environment so that you do not have to re register it each time
 ```
