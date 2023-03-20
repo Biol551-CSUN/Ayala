@@ -1,0 +1,111 @@
+---
+title: "Bad Plot vs. Good Plot"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### **Purpose of this Assignment**
+- To assess my coding ability ad knowledge of what makes a good plot versus a bad plot.
+
+#### ~ Requirements ~
+- All plots must be made in ggplot2, with code visible in the Rmarkdown document.
+- The data must be visible.
+- The good plot and the bad plot should be based on the same, or similar, data.
+- Will be posted on Twitter
+- Clearly articulate each principle of data visualization that is broken or not
+
+## BAD PLOT
+
+
+
+
+```{r cars}
+### Load the libraries ###
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(waffle)
+library(devtools)
+library(dplyr)
+
+### Load in the Data ###
+cancer<-read_csv(here("Week_08","Data", "breastcancer_UMC.csv"))
+glimpse(cancer)
+# View(cancer)
+
+### Filter the Data ###
+### haha jk
+
+
+```
+```{r}
+
+ggsave(here("Week_08","Output","BadPlot.png"))
+
+```
+
+
+## GOOD PLOT
+
+```{r}
+
+### Load the libraries ###
+
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(ggridges)
+library(ggthemes)
+library(janitor)
+library(devtools)
+library(lubridate)
+library(dplyr)
+library(colorspace)
+
+
+### Load in the Data ###
+cancer<-read_csv(here("Week_08","Data", "breastcancer_UMC.csv"))
+glimpse(cancer)
+# View(cancer)
+
+### Filtering the Data ###
+filtercancer<-cancer %>%
+clean_names %>%
+filter(class != 'false recurrence events') %>%
+select('tumor_size', age, class, breast ) %>%
+group_by('tumor-size', breast) %>%
+mutate(avg = mean(age, na.rm = TRUE)) %>%
+filter(class == "recurrence-events") %>%
+filter('tumor-size'>"10-14" & age<"60-69")
+
+```
+```{r}
+# Make the Ridgeline Plot
+filtercancer %>%
+  ggplot( aes(x=tumor_size)) +
+    geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8) +
+  scale_fill_brewer(palette = "Blues") +   # color scheme for the categories
+    ggtitle("Individuals less than 60 years of Age with Breast Cancer Tumor Sizes Larger than 10-14cm ") +
+    theme_ipsum()
+
+# Plot
+ggplot(lincoln_weather, aes(x = `Mean Temperature [F]`, y = `Month`, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "Temp. [F]", option = "C") +
+  labs(title = 'Temperatures in Lincoln NE in 2016') +
+  theme_ipsum() +
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+```
+
