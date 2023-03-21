@@ -45,9 +45,24 @@ glimpse(cancer)
 ### haha jk
 
 
+
+
 ```
 ```{r}
 
+ggplot(cancer,
+       aes(x=`deg-malig`,
+           fill= class),
+       color = "green") +
+  geom_bar(position='dodge') + 
+  theme_void() +
+  labs(title='Plot With Collected Data of Deg',
+       x='Degree of Malignancy',
+       y='Count') +
+  scale_fill_manual(values = beyonce_palette(1)) +
+  theme(axis.title = element_text(size = 14, color = "orange",
+        panel.background = element_rect(fill = "white")
+                
 ggsave(here("Week_08","Output","BadPlot.png"))
 
 ```
@@ -64,48 +79,72 @@ library(here)
 library(ggplot2)
 library(ggridges)
 library(ggthemes)
+library(hrbrthemes)
+library(beyonce)
 library(janitor)
 library(devtools)
-library(lubridate)
 library(dplyr)
-library(colorspace)
+library(tidyr)
+library(waffle)
+library(qwraps2)
+library(gridExtra)
+library(arm)
+library(car)
+library(psych)
+library(caTools)
+library(caret)
+library(keras)
 
 
 ### Load in the Data ###
-cancer<-read_csv(here("Week_08","Data", "breastcancer_UMC.csv"))
-glimpse(cancer)
+cancer <- read_csv(here("Week_08","Data", "breastcancer_UMC.csv"))
+glimpse(cancer) # look at data
 # View(cancer)
+attach(cancer) # all the data variables
+head(cancer) # shows beginning of  dataset
+str(cancer) # shows structure of dataset
+#summary(cancer) # shows each column and other attributes
 
-### Filtering the Data ###
-filtercancer<-cancer %>%
-clean_names %>%
-filter(class != 'false recurrence events') %>%
-select('tumor_size', age, class, breast ) %>%
-group_by('tumor-size', breast) %>%
-mutate(avg = mean(age, na.rm = TRUE)) %>%
-filter(class == "recurrence-events") %>%
-filter('tumor-size'>"10-14" & age<"60-69")
+
+# pair up corr. coefficient btwn variables
+pairs.panels(cancer) # menopause and age is stat sig 
+df <- data.frame(`tumor-size`=c('0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54'))
+
+
+### Filtering the Data ### Part 1
+# cancer = filter(cancer, `breast-quad`!= '?' & node.caps != '?')
+
+### Filter Data ### Part 2
+data <- cancer %>%
+filter(`tumor-size`>="30-34") %>%
+arrange()
+
+#select('tumor_size', age, class, `deg-malig`) %>%
+#group_by(class) %>%
+#mutate(avg = mean(`tumor-size`, na.rm = TRUE)) %>%
+#filter(class == "recurrence-events") %>%
+#filter('tumor-size'>"10-14" & age<"60-69")
 
 ```
 ```{r}
 # Make the Ridgeline Plot
-filtercancer %>%
-  ggplot( aes(x=tumor_size)) +
-    geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8) +
-  scale_fill_brewer(palette = "Blues") +   # color scheme for the categories
-    ggtitle("Individuals less than 60 years of Age with Breast Cancer Tumor Sizes Larger than 10-14cm ") +
-    theme_ipsum()
+data <- cancer %>%
+filter(`tumor-size`>="30-34")
+ggplot(data=data,
+       aes(x= `deg-malig`, # degree of malignancy
+           group = `tumor-size`, # group by tumor size
+          fill=`tumor-size`, # focus on tumor sizes
+          `tumor-size`= "Tumor Size")) + # wanted to try to change name 
+  geom_density(adjust=1.5, alpha=0.4) + # adjusting size
+  scale_fill_discrete(breaks=c('30-34', '35-39', '40-44', '45-49', '50-54')) + # arranged order of legend
+  theme_ipsum_pub() + # cute rainbow theme
+  labs(x = "Degree of Malignancy", y = "Density", title = "Correlation of the Degree of Malignancy w/ Tumor Size", subtitle = "There are 5 ranges of tumor sizes from 30-54 (cm)") + # title and subtitles + x and y axes
+  scale_fill_manual(values = beyonce_palette(8)) +
+  theme(axis.title = element_text(size = 14, color = "darkseagreen"),
+        panel.background = element_rect(fill = "white"))# color the background white
 
-# Plot
-ggplot(lincoln_weather, aes(x = `Mean Temperature [F]`, y = `Month`, fill = ..x..)) +
-  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
-  scale_fill_viridis(name = "Temp. [F]", option = "C") +
-  labs(title = 'Temperatures in Lincoln NE in 2016') +
-  theme_ipsum() +
-    theme(
-      legend.position="none",
-      panel.spacing = unit(0.1, "lines"),
-      strip.text.x = element_text(size = 8)
-    )
+ggsave(here("Week_08","Output","GoodPlot.png"), # saved the good plot
+        width = 10, height = 8) # adjust size of graph in inches
+
 ```
 
