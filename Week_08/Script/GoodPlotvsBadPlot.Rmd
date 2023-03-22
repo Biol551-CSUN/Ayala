@@ -61,19 +61,20 @@ ggplot(data = cancer,
   theme(text = element_text(family = "Algeria")) +
   labs(title='the PloT whti DaTa?!',
        subtitle ="class versus count, idk",
-       x='Breast',y='Count') +
+       x='breast',y='count') +
   theme_void() +
-  theme(plot.title = element_text(size = 55, hjust = 0.5, color = "chartreuse4"),
+   scale_fill_manual(values = beyonce_palette(1)) +
+  theme(plot.title = element_text(size = 95, hjust = 0.5, color = "chartreuse4"),
         plot.title.position = "plot", # title adjustments
-        plot.subtitle = element_text(size =66,hjust = 0.5, lineheight = 1.1, color = "dodgerblue"),
-        axis.title = element_text(size = 68, color = "darkgoldenrod4", hjust = 0.5), # title adjustments
-        axis.text = element_text(size = 47,color = "tomato1",hjust = 0.5), # text adjustments
-        panel.grid = element_line(linewidth = 0.35, linetype = "dotted", color = "gold4"), # background gridlines
+        plot.subtitle = element_text(size =86,hjust = 0.5, lineheight = 1.1, color = "dodgerblue"),
+        axis.title = element_text(size =228, color = "navy", hjust = 0.5), # title adjustments
+        axis.text = element_text(size = 05,color = "tomato1",hjust = 0.5), # text adjustments
+        panel.grid = element_line(linewidth = 0.35, linetype = "dotted", color = "grey"), # background gridlines
         plot.margin = unit(c(1.0, 1.0, 1.0, 1.0), "cm"), # margin adjustments
-        plot.background = element_rect(color = "coral1", fill="black"))
+        plot.background = element_rect(color = "coral1", fill="springgreen1"))
 ### save plot ###
   ggsave(here("Week_08","Output","BadPlot.png"),
-        width = 7, height = 5) # in inches
+        width =43, height = 5) # in inches
 ```
 
 ### Reasons as to why this was a *bad plot*
@@ -153,13 +154,13 @@ ggplot(data=data,aes(x=`deg.malig`,# degree of malignancy
   scale_fill_discrete(breaks=c('30-34', '35-39', '40-44', '45-49', '50-54')) + # arranged order of legend 
   labs(x = "Degree of Malignancy", y = "Density", title = "Correlation of the Degree of Malignancy w/ Tumor Size", subtitle = "There are 5 ranges of tumor sizes from 30-54 (cm)") + # title and subtitles + x and y axes
   scale_fill_manual(values = beyonce_palette(8)) +
-  theme(axis.title = element_text(size = 30, color = "darkslateblue"),
+  theme(axis.title = element_text(size = 20, color = "darkslateblue"),
   panel.background = element_rect(fill = "linen"))
   # background color is white
 
 
 ggsave(here("Week_08","Output","GoodPlot.png"), # saved the good plot
-        width = 10, height = 8) # adjust size of graph in inches
+        width = 7, height = 8) # adjust size of graph in inches
 
 ```
 ### Reasons as to why this was a *good plot*
