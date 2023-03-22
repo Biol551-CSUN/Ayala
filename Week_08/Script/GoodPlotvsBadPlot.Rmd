@@ -76,7 +76,7 @@ ggplot(data = cancer,
         width = 7, height = 5) # in inches
 ```
 
-
+### Reasons as to why this was a *bad plot*
 ## GOOD PLOT
 
 ```{r}
@@ -125,8 +125,8 @@ df <- data.frame(`tumor-size`=c('0-4', '5-9', '10-14', '15-19', '20-24', '25-29'
 # cancer = filter(cancer, `breast-quad`!= '?' & node.caps != '?')
 
 ### Filter Data ### Part 2
-#data <- cancer %>%
-#filter(`tumor-size1`="30-34") 
+data <- cancer %>%
+filter(tumor.size>"30-34") 
 
 
 ## Loading Google fonts (https://fonts.google.com/)
@@ -140,11 +140,14 @@ df <- data.frame(`tumor-size`=c('0-4', '5-9', '10-14', '15-19', '20-24', '25-29'
 ```
 ```{r}
 # Make the Ridgeline Plot
-  
-ggplot(data=data,aes(x= `deg-malig`, # degree of malignancy
-           group = `tumor-size`,# group by tumor size
-           fill = `tumor-size`)) + #  fill by tumor size
+# Register fonts for Windows bitmap output
+font_add(family = "Comic", regular = "comic.ttf")
+showtext_auto()
+ggplot(data=data,aes(x=`deg.malig`,# degree of malignancy
+           group = `tumor.size`,# group by tumor size
+           fill = tumor.size)) + #  fill by tumor size
   geom_density(adjust=1.5, alpha=0.5,  show.legend = FALSE) + # adjusting size
+ theme(text = element_text(family = "Comic")) +
   theme_ipsum_pub() + # cute rainbow theme
   theme_minimal() +
   scale_fill_discrete(breaks=c('30-34', '35-39', '40-44', '45-49', '50-54')) + # arranged order of legend 
@@ -159,4 +162,4 @@ ggsave(here("Week_08","Output","GoodPlot.png"), # saved the good plot
         width = 10, height = 8) # adjust size of graph in inches
 
 ```
-
+### Reasons as to why this was a *good plot*
