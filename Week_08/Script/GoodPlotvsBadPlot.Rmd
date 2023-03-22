@@ -27,44 +27,53 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-```{r cars}
+```{r}
 ### Load the libraries ###
 library(tidyverse)
 library(here)
 library(ggplot2)
 library(waffle)
 library(devtools)
+library(showtext)
+library(extrafont)
 library(dplyr)
+library(extrafont)
 
 ### Load in the Data ###
-cancer<-read_csv(here("Week_08","Data", "breastcancer_UMC.csv"))
+cancer<-read.csv(here("Week_08","Data", "breastcancer_UMC.csv")) # loading data
 glimpse(cancer)
 # View(cancer)
 
-### Filter the Data ###
-### haha jk
-
-
-
-
+loadfonts()
+# want to output to .ps files instead of .pdf, use:
+# loadfonts(device="postscript")
 ```
 ```{r}
+#font_import(paths = "C:/Users/nikky/AppData/Local/Microsoft/Windows/Fonts")
+# Register fonts for Windows bitmap output
+font_add(family = "Algerian", regular ="alger.ttf")
+showtext_auto()
 
-ggplot(cancer,
-       aes(x=`deg-malig`,
-           fill= class),
-       color = "green") +
-  geom_bar(position='dodge') + 
+ggplot(data = cancer, 
+       aes(x=breast, 
+           fill=class)) +
+  geom_bar(position='dodge')+
+  theme(text = element_text(family = "Algeria")) +
+  labs(title='the PloT whti DaTa?!',
+       subtitle ="class versus count, idk",
+       x='Breast',y='Count') +
   theme_void() +
-  labs(title='Plot With Collected Data of Deg',
-       x='Degree of Malignancy',
-       y='Count') +
-  scale_fill_manual(values = beyonce_palette(1)) +
-  theme(axis.title = element_text(size = 14, color = "orange",
-        panel.background = element_rect(fill = "white")
-                
-ggsave(here("Week_08","Output","BadPlot.png"))
-
+  theme(plot.title = element_text(size = 55, hjust = 0.5, color = "chartreuse4"),
+        plot.title.position = "plot", # title adjustments
+        plot.subtitle = element_text(size =66,hjust = 0.5, lineheight = 1.1, color = "dodgerblue"),
+        axis.title = element_text(size = 68, color = "darkgoldenrod4", hjust = 0.5), # title adjustments
+        axis.text = element_text(size = 47,color = "tomato1",hjust = 0.5), # text adjustments
+        panel.grid = element_line(linewidth = 0.35, linetype = "dotted", color = "gold4"), # background gridlines
+        plot.margin = unit(c(1.0, 1.0, 1.0, 1.0), "cm"), # margin adjustments
+        plot.background = element_rect(color = "coral1", fill="black"))
+### save plot ###
+  ggsave(here("Week_08","Output","BadPlot.png"),
+        width = 7, height = 5) # in inches
 ```
 
 
@@ -84,9 +93,10 @@ library(beyonce)
 library(janitor)
 library(devtools)
 library(dplyr)
-library(tidyr)
 library(waffle)
 library(qwraps2)
+library(showtext)
+library(extrafont)
 library(gridExtra)
 library(arm)
 library(car)
@@ -97,7 +107,7 @@ library(keras)
 
 
 ### Load in the Data ###
-cancer <- read_csv(here("Week_08","Data", "breastcancer_UMC.csv"))
+cancer <- read.csv(here("Week_08","Data", "breastcancer_UMC.csv"))
 glimpse(cancer) # look at data
 # View(cancer)
 attach(cancer) # all the data variables
@@ -115,9 +125,11 @@ df <- data.frame(`tumor-size`=c('0-4', '5-9', '10-14', '15-19', '20-24', '25-29'
 # cancer = filter(cancer, `breast-quad`!= '?' & node.caps != '?')
 
 ### Filter Data ### Part 2
-data <- cancer %>%
-filter(`tumor-size`>="30-34") %>%
-arrange()
+#data <- cancer %>%
+#filter(`tumor-size1`="30-34") 
+
+
+## Loading Google fonts (https://fonts.google.com/)
 
 #select('tumor_size', age, class, `deg-malig`) %>%
 #group_by(class) %>%
@@ -128,20 +140,20 @@ arrange()
 ```
 ```{r}
 # Make the Ridgeline Plot
-data <- cancer %>%
-filter(`tumor-size`>="30-34")
-ggplot(data=data,
-       aes(x= `deg-malig`, # degree of malignancy
-           group = `tumor-size`, # group by tumor size
-          fill=`tumor-size`, # focus on tumor sizes
-          `tumor-size`= "Tumor Size")) + # wanted to try to change name 
-  geom_density(adjust=1.5, alpha=0.4) + # adjusting size
-  scale_fill_discrete(breaks=c('30-34', '35-39', '40-44', '45-49', '50-54')) + # arranged order of legend
+  
+ggplot(data=data,aes(x= `deg-malig`, # degree of malignancy
+           group = `tumor-size`,# group by tumor size
+           fill = `tumor-size`)) + #  fill by tumor size
+  geom_density(adjust=1.5, alpha=0.5,  show.legend = FALSE) + # adjusting size
   theme_ipsum_pub() + # cute rainbow theme
+  theme_minimal() +
+  scale_fill_discrete(breaks=c('30-34', '35-39', '40-44', '45-49', '50-54')) + # arranged order of legend 
   labs(x = "Degree of Malignancy", y = "Density", title = "Correlation of the Degree of Malignancy w/ Tumor Size", subtitle = "There are 5 ranges of tumor sizes from 30-54 (cm)") + # title and subtitles + x and y axes
   scale_fill_manual(values = beyonce_palette(8)) +
-  theme(axis.title = element_text(size = 14, color = "darkseagreen"),
-        panel.background = element_rect(fill = "white"))# color the background white
+  theme(axis.title = element_text(size = 30, color = "darkslateblue"),
+  panel.background = element_rect(fill = "linen"))
+  # background color is white
+
 
 ggsave(here("Week_08","Output","GoodPlot.png"), # saved the good plot
         width = 10, height = 8) # adjust size of graph in inches
