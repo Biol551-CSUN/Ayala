@@ -35,6 +35,7 @@ library(ggplot2)
 library(waffle)
 library(devtools)
 library(showtext)
+library(beyonce)
 library(extrafont)
 library(dplyr)
 library(extrafont)
@@ -78,6 +79,9 @@ ggplot(data = cancer,
 ```
 
 ### Reasons as to why this was a *bad plot*
+
+For starters, the data was never filtered out so the data itself is not very tidy. But getting to the more aesthetic appeal of this plot, it's not a positive eye catcher but it will turn heads. On a positive note there is a title, subtitle and  axes. However, they are at the worst text size and colors. The title and subtitles give no actual meaningful sumamry, suggestion or overview about what this plot is even about. The background is this yucky neon green that is not extremely appealing or pleasing to the eye. It has a legend, the legend itself is not bad but the proportions are off. Just like the bar plot itself, it's not bad but extremely basic as I kept the base R colors. However, the size of the plot is tiny meaning it is difficult to read and not clear about what this plot is depicting. It poorly communicates data in a not responsible manner. All in all, I do not think this plot looks awesome in the slightest way.
+
 ## GOOD PLOT
 
 ```{r}
@@ -87,30 +91,21 @@ ggplot(data = cancer,
 library(tidyverse)
 library(here)
 library(ggplot2)
-library(ggridges)
-library(ggthemes)
 library(hrbrthemes)
-library(beyonce)
 library(janitor)
 library(devtools)
 library(dplyr)
-library(waffle)
-library(qwraps2)
 library(showtext)
 library(extrafont)
 library(gridExtra)
-library(arm)
-library(car)
-library(psych)
-library(caTools)
-library(caret)
-library(keras)
+
+
 
 
 ### Load in the Data ###
 cancer <- read.csv(here("Week_08","Data", "breastcancer_UMC.csv"))
 glimpse(cancer) # look at data
-# View(cancer)
+#View(cancer)
 attach(cancer) # all the data variables
 head(cancer) # shows beginning of  dataset
 str(cancer) # shows structure of dataset
@@ -127,7 +122,7 @@ df <- data.frame(`tumor-size`=c('0-4', '5-9', '10-14', '15-19', '20-24', '25-29'
 
 ### Filter Data ### Part 2
 data <- cancer %>%
-filter(tumor.size>"30-34") 
+filter(tumor.size>"35-39") 
 
 
 ## Loading Google fonts (https://fonts.google.com/)
@@ -147,20 +142,26 @@ showtext_auto()
 ggplot(data=data,aes(x=`deg.malig`,# degree of malignancy
            group = `tumor.size`,# group by tumor size
            fill = tumor.size)) + #  fill by tumor size
-  geom_density(adjust=1.5, alpha=0.5,  show.legend = FALSE) + # adjusting size
+  geom_density(adjust=1.5, alpha=0.5,  show.legend = TRUE) + # adjusting size
  theme(text = element_text(family = "Comic")) +
   theme_ipsum_pub() + # cute rainbow theme
   theme_minimal() +
-  scale_fill_discrete(breaks=c('30-34', '35-39', '40-44', '45-49', '50-54')) + # arranged order of legend 
-  labs(x = "Degree of Malignancy", y = "Density", title = "Correlation of the Degree of Malignancy w/ Tumor Size", subtitle = "There are 5 ranges of tumor sizes from 30-54 (cm)") + # title and subtitles + x and y axes
-  scale_fill_manual(values = beyonce_palette(8)) +
-  theme(axis.title = element_text(size = 20, color = "darkslateblue"),
-  panel.background = element_rect(fill = "linen"))
+  labs(x = "Degree of Malignancy", y = "Density", title = "Correlation of the Degree of Malignancy w/ Tumor Size within Patients that Have Breast Cancer", subtitle = "There are 4 ranges of tumor sizes from 40-54 (cm) depicting the larger the mass size of the tumor, the more risk it will be malignant.") + # title and subtitles + x and y axes
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  scale_color_brewer(palette = "Blues") +
+   scale_fill_discrete(breaks=c('40-44','45-49', '50-54')) + # arranged order of legend
+  theme(axis.title = element_text(size = 15, color = "mediumorchid4"),
+  panel.background = element_rect(fill = "white"))
   # background color is white
 
+
+   
 
 ggsave(here("Week_08","Output","GoodPlot.png"), # saved the good plot
         width = 7, height = 8) # adjust size of graph in inches
 
 ```
 ### Reasons as to why this was a *good plot*
+
+To begin, the colors follow a theme of shades of pretty pastels within this density plot. The data is more clear as there are not too many variables shown in the legend as well as on the plot. I filtered out the 3 highest ranges of tumor sizes and compared them to its potential degree of malignancy. The data is not difficult to follow as none of the colors are the same and the x axes are properly labeled at a reasonable size. The title and subtitle provide meaningful information that will help the individual understand what this plot is showing in regards to breast cancer and risk of a malignant tumor based on its size. I think it's pretty awesome as it's simple and straightforward.
