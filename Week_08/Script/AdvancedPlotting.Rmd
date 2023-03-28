@@ -9,19 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
 
 ```{r}
 
@@ -129,14 +116,14 @@ ggsave(here("Week_08","Output","penguinplot.png"))
 ```{r}
 # read in the plot as a magick image and make a composite plot
 penplot<-image_read(here("Week_08","Output","penguinplot.png"))
-out <- image_composite(penplot, penguin, offset = "+70+30")
+out<-image_composite(penplot, penguin, offset = "+20+10")
 out
 
 # Read in a penguin gif
-pengif<-image_read("https://media3.giphy.com/media/H4uE6w9G1uK4M/giphy.gif")
-outgif <- image_composite(penplot, pengif, gravity = "center")
-animation <- image_animate(outgif, fps = 10, optimize = TRUE)
-animation
+#pengif<-image_read("https://media3.giphy.com/media/H4uE6w9G1uK4M/giphy.gif")
+#outgif <- image_composite(penplot, pengif, gravity = "center")
+#animation <- image_animate(outgif, fps = 10, optimize = TRUE)
+#animation
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
