@@ -89,11 +89,8 @@ ggplot(data = cancer,
         plot.margin = unit(c(1.0, 1.0, 1.0, 1.0), "cm"), # margin adjustments
         plot.background = element_rect(color = "coral1", fill="springgreen1"))
 
-ggsave(here("GoodPlotBadPlot","Output","BadPlot.png"), # saved the good plot
-        width = 7, height = 8) # adjust size of graph in inches
-
 ```  
-```{r  DonkPlot}
+```{r}
 # read in the plot as a magick image and make a composite plot
 shrekplot<-image_read(here("GoodPlotBadPlot","Output","BadPlot.png"))
 shrekout <- image_composite(shrekplot, shrek, offset = "+30+70") 
@@ -109,7 +106,7 @@ donkout
 
 ### Reasons as to why this was a *bad plot*
 
-For starters, the data was never filtered out so the data itself is not very tidy. But getting to the more aesthetic appeal of this plot, it's not a positive eye catcher but it will turn heads. On a positive note there is a title, subtitle and  axes. However, they are at the worst text size and colors. The title and subtitles give no actual meaningful summary, suggestion or overview about what this plot is even about. The background is this yucky neon green that is not extremely appealing or pleasing to the eye. It has a legend, the legend itself is not bad but the proportions are off. Just like the bar plot itself, it's not bad but extremely basic as I kept the base R colors. However, the size of the plot is tiny meaning it is difficult to read and not clear about what this plot is depicting. It poorly communicates data in a not responsible manner. All in all, I do not think this plot looks awesome in the slightest way.
+For starters, tehre is no clean cut story the data entails. The data was never filtered out so the data itself is not very tidy. But getting to the more aesthetic appeal of this plot, it's not a positive eye catcher but it will turn heads. On a positive note there is a title, subtitle and  axes. However, they are at the worst text size and colors. I apologize in advance to anyone who is red/green colorblind, this is severely difficult to read and interpret. The title and subtitles give no actual meaningful summary, suggestion or overview about what this plot is even about. The background is an unpleasant neon green that is not extremely appealing or pleasing to the eye as well as similar in color ot the title and subtitles. It has a legend that does not correlate to the actual data that was used. The bar plot colors were based off of the beyonce palette, so it was a step up from just keeping it to the original base R colors. However, the size of the plot is tiny meaning it is difficult to read and not clear about what this plot is depicting. It poorly communicates data in a not responsible manner. All in all, I do not think this plot looks awesome in the slightest way. This would definitely not follow reproducible protocol.
 
 ## GOOD PLOT
 
@@ -193,4 +190,4 @@ ggsave(here("GoodPlotBadPlot","Output","GoodPlot.png"), # saved the good plot
 ```
 ### Reasons as to why this was a *good plot*
 
-To begin, the colors follow a theme of shades of pretty pastels within this density plot. The data is more clear as there are not too many variables shown in the legend as well as on the plot. I filtered out the 3 highest ranges of tumor sizes and compared them to its potential degree of malignancy. The data is not difficult to follow as none of the colors are the same and the x axes are properly labeled at a reasonable size. The title and subtitle provide meaningful information that will help the individual understand what this plot is showing in regards to breast cancer and risk of a malignant tumor based on its size. I think it's pretty awesome as it's simple and straightforward.
+To begin, the colors follow a theme of shades of pretty pastels within this density plot. The data is more clear as there are not too many variables shown in the legend as well as on the plot. I filtered out the 3 highest ranges of tumor sizes and compared them to its potential degree of malignancy. The data is not difficult to follow as none of the colors are the same and the x axes are properly labeled at a reasonable size. It is also a bit more inclusive when it comes to people with colorblind conditions. The title and subtitle provide meaningful information that will help the individual understand what this plot is showing in regards to breast cancer and risk of a malignant tumor based on its size. I think it's pretty awesome as it's simple and straightforward.
