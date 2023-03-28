@@ -1,0 +1,142 @@
+---
+title: "ClassNotes"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+
+### LOAD LIBRARIES###
+library(tidyverse)
+library(here)
+library(patchwork)
+library(ggrepel)
+library(gganimate)
+library(magick)
+library(palmerpenguins)
+```
+```{r}
+### BEGIN PLOTTING ###
+plot1<-penguins %>% # this is plot 1
+  ggplot(aes(x = body_mass_g,  # x axis
+             y = bill_length_mm,  # y axis
+             color = species))+ # color coded by species
+  geom_point() # point type of plot
+plot1
+
+
+# plot 2
+plot2<-penguins %>% # this is plot 2
+  ggplot(aes(x = sex,  # x axis
+             y = body_mass_g, # y axis
+             color = species))+ # color coded by species
+  geom_jitter(width = 0.2) # jitter type of plot
+plot2
+```
+
+```{r}
+plot1+plot2+ # both plots will be side by side
+  plot_layout(guides = "collect")+ # only one legend pops up
+  plot_annotation(tag_levels = 'A') # adds a tag
+
+
+plot1/plot2 + # stacked vertically
+  plot_layout(guides = "collect")+
+  plot_annotation(tag_levels = 'A')
+```
+
+```{r}
+### using ggrepel ###
+#View(mtcars)
+
+ggplot(mtcars, aes(x = wt, # weight for the car
+                   y = mpg, # miels per gallon
+                   label = rownames(mtcars))) + # label is the row names
+  geom_text() + # creates a text label
+  geom_point(color = 'plum4') # dots will be purple
+
+
+
+
+ggplot(mtcars, aes(x = wt, # x axis
+                   y = mpg,  # y axis
+                   label = rownames(mtcars))) + # labels the point
+  geom_text_repel() + # repel them
+  geom_point(color = 'red') # red dot
+
+ggplot(mtcars, aes(x = wt, # x axis
+                   y = mpg,  # y axis
+                   label = rownames(mtcars))) + # labels
+  geom_label_repel() + # repel them but get a text box around names
+  geom_point(color = 'navy')
+```
+```{r}
+### gganimate ###
+penguins %>% # penguin data
+ggplot(aes(x = body_mass_g, # x axis
+            y = bill_depth_mm,  # ya xis
+            color = species)) + # color coded species
+  geom_point() + # points represent penguin data (bill length and body mass)
+ transition_states( 
+     year, # what are we animating by
+     transition_length = 2, #The relative length of the transition.
+     state_length = 1 # The length of the pause between transitions
+   )+
+  ease_aes("bounce-in-out")  +
+  ggtitle('Year: {closest_state}')+ # title of year changes
+  anim_save(here("Week_O8","Output","mypenguingif.gif")) # save animation
+### all other options
+#linear (default)
+#bounce
+#sine
+#circular
+#many more...
+
+```
+```{r}
+### do you believe in magick?? ###
+
+penguin<-image_read("https://pngimg.com/uploads/penguin/pinguin_PNG9.png") # read in image
+penguin # image named as penguin
+# To put penguin on a plot you first need to save your plot as an image.
+penguins %>%
+ggplot(aes(x = body_mass_g, # x axis
+            y = bill_depth_mm,# y axis
+            color = species)) + # color coded species
+  geom_point() # points are color coded
+ggsave(here("Week_08","Output","penguinplot.png"))
+```
+
+```{r}
+# read in the plot as a magick image and make a composite plot
+penplot<-image_read(here("Week_08","Output","penguinplot.png"))
+out <- image_composite(penplot, penguin, offset = "+70+30")
+out
+
+# Read in a penguin gif
+pengif<-image_read("https://media3.giphy.com/media/H4uE6w9G1uK4M/giphy.gif")
+outgif <- image_composite(penplot, pengif, gravity = "center")
+animation <- image_animate(outgif, fps = 10, optimize = TRUE)
+animation
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
