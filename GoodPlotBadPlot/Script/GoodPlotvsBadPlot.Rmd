@@ -92,7 +92,7 @@ ggplot(data = cancer,
 ```  
 ```{r}
 # read in the plot as a magick image and make a composite plot
-shrekplot<-image_read(here("GoodPlotBadPlot","Output","BadPlot.png"))
+shrekplot<-image_read(here("GoodPlotBadPlot","Output","BadPlotFinal.png"))
 shrekout <- image_composite(shrekplot, shrek, offset = "+30+70") 
 donkout <- image_composite(shrekout, donkey, offset = "+800+200")
 donkout 
