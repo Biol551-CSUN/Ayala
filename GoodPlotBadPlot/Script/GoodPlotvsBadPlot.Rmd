@@ -172,7 +172,7 @@ ggplot(data=data,aes(x=`deg.malig`,# degree of malignancy
  theme(text = element_text(family = "Comic")) +
   theme_ipsum_pub() + # cute rainbow theme
   theme_minimal() +
-  labs(x = "Degree of Malignancy", y = "Density", title = "Correlation of the Degree of Malignancy w/ Tumor Size within Patients that Have Breast Cancer", subtitle = "There are 4 ranges of tumor sizes from 40-54 (cm) depicting the larger the mass size of the tumor, the more risk it will be malignant.") + # title and subtitles + x and y axes
+  labs(x = "Degree of Malignancy", y = "Tumor Size", title = "Correlation of the Degree of Malignancy w/ Tumor Size within Patients that Have Breast Cancer", subtitle = "There are 4 ranges of tumor sizes from 40-54 (cm) depicting the larger the mass size of the tumor, the more risk it will be malignant.") + # title and subtitles + x and y axes
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_color_brewer(palette = "Blues") +
