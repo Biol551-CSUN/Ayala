@@ -1,0 +1,211 @@
+---
+title: "Class Notes Functional Programming"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+ 
+### Functional Programming 
+Purpose: when to write a function, how to make a custom function
+When to Use: anytime you have a task that you want to use more than once, keeps your script clean, avoids mistakes with copy and paste, minimizes places where you need to update your code
+
+
+### Example
+(value - min/(max - min))
+
+```{r}
+### load libraries
+library(tidyverse)
+
+df <- tibble::tibble(
+  mean =5, n=10,
+  StDev =2,
+  a = rnorm(10), # draws 10 random values from a randomly normal distribution
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+head(df)
+# mean of 0, StDev at 1 which can be altered i.e.
+```
+### Rescale Every Column Individually
+```{r}
+ df<-df %>% # mutate columns to scale it  (value - min/(max - min))
+  mutate(a = (a-min(a, na.rm = TRUE))/(max(a, na.rm = TRUE)-min(a, na.rm = TRUE)),
+         (b = (b-min(b, na.rm = TRUE))/(max(b, na.rm = TRUE)-min(b, na.rm = TRUE)),
+         (c = (c-min(c, na.rm = TRUE))/(max(c, na.rm = TRUE)-min(c, na.rm = TRUE)),
+         (d = (d-min(d, na.rm = TRUE))/(max(d, na.rm = TRUE)-min(d, na.rm = TRUE)))
+
+######
+rescale01 <- function(x) {
+  value<-(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))
+  return(value)
+}
+df %>%
+  mutate(a = rescale01(a),
+         b = rescale01(b),
+         c = rescale01(c),
+         d = rescale01(d))
+```
+### 3 Steps to Creating a New Function
+- You need to pick a name for the function. Here I’ve used *rescale01* because this function rescales a vector to lie between 0 and 1.
+
+- You list the inputs, or *arguments*, to the function inside function. Here we have just one argument. If we had more the call would look like function(x, y, z).
+
+- You place the code you have developed in *body of the function*, a { block that immediately follows function(...).
+
+- *Return* tells us what values we want returned when you run the function
+
+```{r}
+rescale01 <- function(x) {
+  value<-(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))
+  return(value)
+}
+```
+### Making a fucntion to convert F to C
+Formula: temp_C <- (temp_F - 32) * 5 / 9
+```{r}
+
+# - Step 1: Name the function
+F_to_C <- function() {
+}
+# - Step 2: Put in the equation
+F_to_C <- function() { 
+  temp_C <- (temp_F - 32) * 5 / 9
+}
+# Step 3: Decide what the arguments are
+
+F_to_C <- function(temp_F) {
+  temp_C <- (temp_F - 32) * 5 / 9 
+}
+# Step 4: Decide what is being returned
+
+F_to_C <- function(temp_F) { 
+  temp_C <- (temp_F - 32) * 5 / 9 
+  return(temp_C)
+}
+# Step 5: Test it
+
+F_to_C(32)
+## [1] 0
+F_to_C(212)
+## [1] 100
+
+```
+```{r}
+### Making a function to convert C to K
+# Formula: celcius + 273.15
+
+# - Step 1: Name the function
+C_to_K <- function() {
+}
+
+# - Step 2: Put in the equation
+C_to_K <- function() { 
+  temp_K <- (temp_C + 273.15)
+}
+# -Step 3: Decide what the arguments are
+
+C_to_K <- function(temp_C) { 
+  temp_K <- (temp_C + 273.15)
+}
+# - Step 4: Decide what is being returned
+
+C_to_K <- function(temp_C) { 
+  temp_K <- (temp_C + 273.15)
+  return(temp_K)
+}
+
+C_to_K(32)
+C_to_K(273.15)
+C_to_K(0)
+```
+### Making Plots Into a Function
+```{r}
+# load libraries 
+library(palmerpenguins)
+library(PNWColors) # for the PNW color palette 
+library(rlang)
+library(ggplot2)
+
+myplot<-function(data = penguins, x = body_mass_g, y = bill_length_mm){ 
+pal<-pnw_palette("Lake",3, type = "discrete") # my color palette 
+ggplot(data = penguins, aes(x = {{body_mass_g}}, y = {{bill_length_mm}} , color = island))+
+  geom_point()+
+  geom_smooth(method = "lm")+ # add a linear model
+  scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+  theme_bw()
+}
+
+myplot<-function(data = penguins, x, y){
+pal<-pnw_palette("Lake",3, type = "discrete") # my color palette 
+ggplot(data, aes(x = {{x}}, y = {{y}} , color = island))+
+  geom_point()+
+  geom_smooth(method = "lm")+ # add a linear model
+  scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+  theme_bw()
+}
+
+myplot(x = body_mass_g, y = flipper_length_mm)+
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)")
+
+```
+### If Else Statements
+- Suppose that if a > b then f should be = to 20, else f should be equal to 10. Using if/else we:
+```{r}
+a <- 4
+b <- 5
+
+if (a > b) { # my question
+  f <- 20 # if it is true give me answer 1
+    } else { # else give me answer 2
+  f <- 10
+  f
+}
+```
+### New Arguments in Plot
+
+```{r}
+myplot<-function(data = penguins, x, y ,lines=TRUE ){ # add new argument for lines
+pal<-pnw_palette("Lake",3, type = "discrete") # my color palette 
+ggplot(data = penguins, aes(x = {{ body_mass_g}}, y = {{bill_length_mm}} , color = island))+
+  geom_point()+
+  geom_smooth(method = "lm")+ # add a linear model
+  scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+  theme_bw()
+}
+```
+
+```{r}
+myplot<-function(data = penguins, x, y, lines=TRUE ){ # add new argument for lines
+pal<-pnw_palette("Lake",3, type = "discrete") # my color palette 
+if(lines==TRUE){
+ggplot(data, aes(x = {{body_mass_g}}, y = {{bill_length_mm}} , color = island))+
+  geom_point()+
+  geom_smooth(method = "lm")+ # add a linear model
+  scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+  theme_bw()
+}
+else{
+ggplot(data, aes(x = {{x}}, y = {{y}} , color = island))+
+  geom_point()+
+  scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+  theme_bw()
+}
+}
+
+myplot(x = body_mass_g, y = flipper_length_mm, lines = FALSE)
+myplot(x = body_mass_g, y = bill_length_mm, lines = FALSE)
+
+```
+
