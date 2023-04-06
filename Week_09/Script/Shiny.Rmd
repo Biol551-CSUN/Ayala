@@ -1,0 +1,276 @@
+---
+title: "ClassNotesShinyR"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+### Shiny's Purpose 
+- Shiny links regular website and code together
+- Behind the scenes: R code, Data, Report generation
+- User, user interface, and server
+
+### When is Shiny useful?
+When we want to make R code accessible outside of an R or RStudio environment. For example,
+- teaching a package
+- showing data visualizations to non-experts
+- streamlining certain code-intensive things (like database queries or visualizing bulky simulation outputs)
+```{r}
+# load the libraries
+library(shiny)
+ui <- fluidPage() # what you want people to see
+server <- function(input,output) {} # all the behind the scenes code, sends to ui
+shinyApp(ui = ui, server = server) # creates the shiny app object
+
+# opens a blank html page 
+```
+### Each Shiny app has two components
+The ui (user interface) object dictates the appearance of the app. UI functions write HTML. For something to appear in your app, it needs to be in the UI.
+
+The server() function contains rendering expressions that create the objects to display.
+
+The server function and UI object are passed to the shinyApp() function to create a Shiny app object.
+
+When saving the script in your app, create a folder with the name of your app and then save the script as 'app.R'. You MUST save the script with this name for it to work. Also, all files associated with your app must be in this folder.
+
+
+### Start an app in RStudio
+From The RStudio IDE, pick New File -> Shiny Web App
+- You can choose between single (app.R) or multiple files (ui.R and server.R)
+- Doesn't matter which one you choose. Some people like the organization of having multiple files. But it really doesn't make a difference!
+- This has a lot of helpful start code, but we are going to start from scratch today
+
+### Build app around inputs/outputs
+
+### Add elements to your app using fluidPage()
+```{r}
+ui<-fluidPage(
+   # Inputs functions,
+   # Outputs functions
+)
+```
+
+### Create an input with a *Input function
+There are many types of inputs and the syntax for all of them is **typeInput**. To make a slider we use sliderInput().
+
+These inputs make a bunch of html code behind the scene.
+
+```{r}
+sliderInput(inputId = "num", # ID name for the input
+            label = "Choose a number", # Label above the input
+            value = 25, min = 1, max = 100 # values for the slider
+            )
+```
+
+### Creates this code behind the scenes
+```{r}
+<div class="form-group shiny-input-container">
+<label class="control-label" for="num">Choose a number</label>
+<input class="js-range-slider" id="num" data-min="1" data-max="100"
+data-from="25" data-step="1" data-grid="true" data-grid-num="9.9"
+data-grid-snap="false" data-prettify-separator="," data-keyboard="true"
+data-keyboard-step="1.01010101010101"/>
+</div>
+```
+
+### Syntax
+
+### Outputs
+- dataTableOutput() is the function, insert is an interactive tables
+- htmlOutput(), raw HTML
+- imageOutput(), image
+- plotOutput(), plot
+- tableOutput(), table
+- textOutput(), text
+- uiOutput(), a Shiny UI element
+- verbatimtextOutput(), text
+
+### *Output()
+- To display an output add it to fluidPage() with an *Output() function
+
+### Let's add it to our UI
+Note, you must add a comma between objects
+
+```{r}
+library(shiny)
+ui<-fluidPage(
+  sliderInput(inputId = "num", # ID name for the input
+            label = "Choose a number", # Label above the input
+            value = 25, min = 1, max = 100 # values for the slider
+            ),
+  plotOutput("hist") #creates space for a plot called hist
+)
+server<-function(input,output){}
+shinyApp(ui = ui, server = server)
+
+```
+
+This code creates the space for a new plot, but nothing happens yet
+
+### The Server
+What is the server? Mostly, R code. This is where the vegan meat of your app is located.
+
+Use 3 rules to write the server function
+1. Save objects to display to output$
+2. Build objects to display with render*({})
+```{r}
+server<-function(input,output){
+}
+
+server<-function(input,output){
+  output$hist <- renderPlot({
+    # R code to make the hist output goes here
+  })
+}
+```
+
+Look back to the ui, hist is spelled identically to the name in the plotOutput() function
+### Many types of renders
+function:
+- renderDataTable() is the function, insert is an interactive tables saved as a link to a source file
+- renderImage(), an image saved as a link to a source file
+- renderPlot(), plot
+- renderPrint(), code block of printed output
+- renderTable(), table: dataframe, matrix or table like structure
+- renderText(), character string
+- renderUI(), a Shiny UI element
+
+### Let's add two types of inputs
+- Let's say we want to write an input where the user can create whatever title they want by typing it into a box. Let's update our ui to have a textInput.
+```{r}
+ui<-fluidPage(
+  sliderInput(inputId = "num", # ID name for the input 
+            label = "Choose a number", # Label above the input
+            value = 25, min = 1, max = 100 # values for the slider
+            ),
+  textInput(inputId = "title", # new Id is title
+          label = "Write a title",
+          value = "Histogram of Random Normal Values"), # starting title
+  plotOutput("hist") #creates space for a plot called hist  
+)
+```
+### Now let's update the server to change the title of the plot
+```{r}
+server<-function(input,output){
+   output$hist <- renderPlot({
+     # {} allows us to put all our R code in one nice chunck
+    data<-tibble(x = rnorm(input$num)) # 100 random normal points 
+    ggplot(data, aes(x = x))+ # make a histogram 
+      geom_histogram() +
+      labs(title = input$title) #Add a new title
+  })
+}
+```
+### Create two outputs
+Let's say we want to add a data table below the histogram that has all the summary statistics. We need to add another ui that creates a place to put the table. We will use verbatimTextOutput()
+```{r}
+ui<-fluidPage(
+  sliderInput(inputId = "num", # ID name for the input 
+            label = "Choose a number", # Label above the input
+            value = 25, min = 1, max = 100 # values for the slider
+            ),
+  textInput(inputId = "title", # new Id is title 
+          label = "Write a title",
+          value = "Histogram of Random Normal Values"), # starting title 
+  plotOutput("hist"), #creates space for a plot called hist
+  verbatimTextOutput("stats") # create a space for stats
+)
+```
+### Now update the server to calculate the summary stats
+Here, we will use renderPrint()
+```{r}
+server<-function(input,output){
+   output$hist <- renderPlot({
+     # {} allows us to put all our R code in one nice chunck
+    data<-tibble(x = rnorm(input$num)) # 100 random normal points 
+    ggplot(data, aes(x = x))+ # make a histogram 
+      geom_histogram() +
+      labs(title = input$title) #Add a new title
+  })
+   output$stats <- renderPrint({
+     summary(rnorm(input$num)) # calculate summary stats based on the numbers
+     })
+}
+
+```
+### Cleaning the code
+- Here, we used input$num twice: once in the plot and once in the summary stats. This actually created two separate random distributions and the stats actually are not directly related to the plots. We need to build a reactive object so the same dataframe is being used throughout all the code.
+- Stats are not related to the code at the moment (the histogram)
+- reactive() - builds a reactive object (reactive expression)
+data <- reactive( { rnorm(input$num) })
+- object will respond to every ractive value in the code
+- code is used to build and rebuild an object
+### A reactive object is special in two ways
+- You call a reactive object like a function
+- Reactive expressions cache their values making your app run much faster
+data()
+### Reactive object
+```{r}
+library(shiny)
+library(tidyverse)
+ui<-fluidPage(
+  sliderInput(inputId = "num", # ID name for the input
+              label = "Choose a number", # Label above the input
+              value = 25, min = 1, max = 100 # values for the slider
+  ), 
+  textInput(inputId = "title", # new Id is title
+            label = "Write a title", #
+            value = "Histogram of Random Normal Values"), # starting title
+  plotOutput("hist"), #creates space for a plot called hist  
+  verbatimTextOutput("stats") # create a space for stats
+)
+server<-function(input,output){
+  output$hist <- renderPlot({
+    # {} 
+    data<-tibble(x = rnorm(input$num)) # 100 random normal points
+    ggplot(data, aes(x = x))+ # make a histogram
+      geom_histogram()+
+      labs(title = input$title) #Add a new title
+    # to 
+    library(shiny)
+library(tidyverse)
+ui<-fluidPage(
+  sliderInput(inputId = "num", # ID name for the input
+              label = "Choose a number", # Label above the input
+              value = 25, min = 1, max = 100 # values for the slider
+  ), 
+  textInput(inputId = "title", # new Id is title
+            label = "Write a title", #
+            value = "Histogram of Random Normal Values"), # starting title
+  plotOutput("hist"), #creates space for a plot called hist  
+  verbatimTextOutput("stats") # create a space for stats
+)
+server<-function(input,output){
+  data<-reactive({
+     tibble(x = rnorm(input$num)) # 100 random normal points
+  })
+  output$hist <- renderPlot({
+    ggplot(data, aes(x = x))+ # make a histogram
+      geom_histogram()+
+```
+### Reactive object: Use data()
+```{r}
+server<-function(input,output){
+  data<-reactive({ 
+     tibble(x = rnorm(input$num)) # 100 random normal points
+  }) 
+  output$hist <- renderPlot({
+    ggplot(data(), aes(x = x))+ # make a histogram
+      geom_histogram()+
+      labs(title = input$title) #Add a new title
+  })
+  output$stats <- renderPrint({
+    summary(data()) # calculate summary stats based on the numbers
+  })
+}
+shinyApp(ui = ui, server = server)
+```

@@ -39,11 +39,6 @@ head(df)
 ```
 ### Rescale Every Column Individually
 ```{r}
- df<-df %>% # mutate columns to scale it  (value - min/(max - min))
-  mutate(a = (a-min(a, na.rm = TRUE))/(max(a, na.rm = TRUE)-min(a, na.rm = TRUE)),
-         (b = (b-min(b, na.rm = TRUE))/(max(b, na.rm = TRUE)-min(b, na.rm = TRUE)),
-         (c = (c-min(c, na.rm = TRUE))/(max(c, na.rm = TRUE)-min(c, na.rm = TRUE)),
-         (d = (d-min(d, na.rm = TRUE))/(max(d, na.rm = TRUE)-min(d, na.rm = TRUE)))
 
 ######
 rescale01 <- function(x) {
