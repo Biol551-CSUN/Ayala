@@ -47,17 +47,17 @@ kmpl <- (mpg * 0.425144) #  this function converts a value in miles per gallon t
 }
 ```
 
-# Here is my Second Function
+
 ```{r}
 kmplcars <- cars %>% # piping mtcars to new name showing that I will be converting m/g to km/l with function created
   mutate(kmpl = mpgtokmpl(mpg)) # mutating name to mpgtokmpl from kmpl
 
-kmplauto <- auto %>%
-  mutate(kmpl = mpgtokmpl(mpg))
+kmplauto <- auto %>% # piping auto to new name showing that I will be converting m/g to km/l with function created
+  mutate(kmpl = mpgtokmpl(mpg)) #mutating name to mpgtokmpl from kmpl
 
 ```
 
-### Making a Plot Function
+### Here is my Second Function
 
 
 ```{r}
