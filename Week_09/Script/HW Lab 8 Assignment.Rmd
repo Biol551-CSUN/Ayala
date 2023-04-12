@@ -1,4 +1,4 @@
-
+___
 title: "HW Lab 8 Assignment"
 author: "Nicole Ayala"
 date: "`r Sys.Date()`"
@@ -62,10 +62,9 @@ kmplauto <- auto %>% # piping auto to new name showing that I will be converting
 
 ```{r}
 
-autoplot<-function(data = auto, x, y, Even = TRUE ){ # add new argument for EVEN
+mobileplot<-function(data, x, y)
   
-if(Even==TRUE){
-  ggplot(data=auto,
+  ggplot(data,
        aes(x = {{x}}, y = {{y}}))+
   geom_point()+
   labs(x = "Miles per Gallon", y = "Acceleration", title = "Correlation of the Acceleration within Cars and their Amount of Gallon Used") + # title and subtitles + x and y axes
@@ -74,49 +73,34 @@ if(Even==TRUE){
   theme(axis.title = element_text(size = 30, color = "navyblue"),
   panel.background = element_rect(fill = "white"))
   # background color is white
-}
-else {
- ggplot(data,
-       aes(x= {{x}}, y = {{y}}))+
-  geom_point() + # adjusting size
-  labs(x = "Miles per Gallon", y = "Acceleration", title = "Correlation of the Acceleration within Cars and their Amount of Gallon Used") + # title and subtitles + x and y axes
-  theme(panel.grid.major = element_blank(), # keeps background blank (maj/min)
-        panel.grid.minor = element_blank()) +
-  theme(axis.title = element_text(size = 30, color = "navyblue"),
-  panel.background = element_rect(fill = "white")) # background color
-  # background color is white
-}
-}
 
-```
-Even Plot for Auto Data
 
-```{r}
-autoplot(data, x = mpg, y = acceleration, Even = TRUE) +
-  geom_point() +
-  theme_minimal()+
-  labs(x = "Miles per Gallon", y = "Acceleration", title = "Correlation of the Acceleration within Cars and their Amount of Gallon Used") + # title  + x and y axes
-  theme(panel.grid.major = element_blank(), # keeps background blank (maj/min)
-        panel.grid.minor = element_blank()) +
-  theme(axis.title = element_text(size = 40, color = "navyblue"),
-  panel.background = element_rect(fill = "white")) # background color
 
-ggsave(here("Week_09","Output","evenplot.png"))
 ```
  
-Odd Plot for Auto Data
 ```{r}
-autoplot(data = auto, x = mpg, y = acceleration, Even = FALSE)+
+mobileplot(data = auto, x = mpg, y = acceleration)+
   geom_point() +
   theme_minimal()+
-  labs(x = "Miles per Gallon", y = "Acceleration", title = "Correlation of the Acceleration within Cars and their Amount of Gallon Used") + # title  + x and y axes
+  labs(x = "Miles per Gallon", y = "Acceleration", title = "The Acceleration within Auto Mobiles and their Amount of Gallons Used") + # title  + x and y axes
   theme(panel.grid.major = element_blank(),# keeps background blank (maj/min)
         panel.grid.minor = element_blank()) +
   theme(axis.title = element_text(size = 40, color = "navyblue"),
   panel.background = element_rect(fill = "white")) # background color
 
-ggsave(here("Week_09","Output","oddplot.png"))
-
-# have no idea why they are the same plot but I tried my best at making a 'functional' function
+ggsave(here("Week_09","Output","automobileplot.png"))
 ```
 
+
+```{r}
+mobileplot(data = cars, x = mpg, y = cyl)+
+  geom_point() +
+  theme_minimal()+
+  labs(x = "Miles per Gallon", y = "Cylinders", title = "The Number of Cylinders within Cars and their Amount of Gallons Used") + # title  + x and y axes
+  theme(panel.grid.major = element_blank(),# keeps background blank (maj/min)
+        panel.grid.minor = element_blank()) +
+  theme(axis.title = element_text(size = 40, color = "plum4"),
+  panel.background = element_rect(fill = "white")) # background color
+
+ggsave(here("Week_09","Output","carmobileplot.png"))
+```
