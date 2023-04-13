@@ -1,0 +1,39 @@
+---
+title: "My First Presentation"
+subtitle: "⚔️ <br/>"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(xaringan)
+#install and run xaringan straight from R packages
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+```
+
+---
+```{r}
+ # Slide 1 
+```
+ 
+  Text, text, text, text, code
+---
+```{r}
+ # Slide 2
+```
+
+  Text, text, text, text, list, code
+---
+
+```{r}
+Chem_Data <- read.csv(here("Week_09",Data", "chemicaldata_maunalua.csv"))
+```
+
