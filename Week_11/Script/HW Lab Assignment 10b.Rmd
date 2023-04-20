@@ -22,6 +22,7 @@ library(here)
 library(tidyverse)
 library(ggridges)
 library(hrbrthemes)
+library(RColorBrewer)
 library(janitor)
 ```
 ```{r}
@@ -31,26 +32,23 @@ lat<-read_csv(here("Week_11","Data","intertidaldata_latitude.csv"))
 # read.csv reads everything as factors so I will be reading them in as characters with read_csv and change them accordingly to factors
 
 ```
-
-### Clean the Data
-```{r}
-intertidal_clean <- intertidal %>% 
-   filter(!is.na(`Quadrat`)) %>% # remove all of the NAs
-   count(`Quadrat`, sort = TRUE) %>% # sort the Algae in alphabetical order and then convert it into a factor to fix levels
-   mutate(`Quadrat` = factor(`Quadrat`)) %>% # changing Small.barnacles into a factor and then changing it's name
-   filter(n>20) # only want barnacle sizes 20 and above
-   # droplevels() # don't have any other levels besides lwo, mid and high
-   mutate(Quadrat = fct_recode(Quadrat, "Mid" = "Mid 1")) # change the name to Mid!
-
-intertidal_clean
- 
-``` 
 ### Clean the Data.Frame - Intertidal
 - Mid 1
 ```{r}
 intertidal %>%
   clean_names() # will clean any names that have misspellings or unnecessary numbers such as Mid 1
 ```
+### Clean the Data
+```{r}
+intertidal_clean <- intertidal %>% 
+   count(Site, sort = TRUE) %>% # sort the Algae in alphabetical order and then convert it into a factor to fix levels
+   mutate(Site = factor(Site)) %>% # changing Small.barnacles into a factor and then changing it's name
+    filter(Site %in% c("Crystal Cove", "Little Corona")) %>%
+    droplevels() # drop the extra levels
+
+intertidal_clean
+ 
+``` 
 
 ### Reorder the Levels!!
 ```{r}
@@ -63,34 +61,34 @@ ordersbarn
 ```{r}
 glimpse(intertidal)
 interplot <- intertidal %>% # changing the name of the df
+   filter(Site %in% c("Crystal Cove", "Little Corona")) %>%
+   mutate(Quadrat=factor(Quadrat,levels = c("Low", "Mid", "High"))) %>%
   group_by(Quadrat,`Small Barnacles`) %>% # grouping small barnacles and the quadrat together
-  mutate(`Small Barnacles` = factor(`Small Barnacles`)) # ensuring it is still a factor by converting it to one
+  droplevels() # drop the extra levels
 ```
 ### Plotting Time
 ```{r}
-ggplot(data = intertidal, 
-       aes(x= fct_reorder(Quadrat,Site), 
+ggplot(data = interplot, 
+       aes(x= fct_reorder(Quadrat,`Small Barnacles`), 
            y = Site,
-           color = fct_reorder2(`Small Barnacles`,Quadrat,Site))) +
-  geom_density_ridges +
-  theme(text = element_text() +
-  labs(title='Locations of Small Barnacles When at Various Tide Times',
-       subtitle ='In ascending order from low, mid to high tide, there are',
+           fill = ("cornsilk3"))) +
+  geom_density_ridges(show.legend = FALSE) +
+  labs(title='Locations of Small Barnacles When at Various \n Tide Times',
+       subtitle =' In ascending order: tides are shown as low, mid and high.',
        x='Quadrat',
        y='Site',  
-       color = "Small Barnacles") + 
-   theme_ipsum_pub() + # cute rainbow theme
+       fill = "cornsilk3") + 
    theme_minimal() +
    theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  scale_color_brewer(palette = "Blues") +
-  theme(plot.title = element_text(size = 40, hjust = 0.5, color ="navy"),
-        plot.subtitle = element_text(size =30,hjust = 0.5, lineheight = 1.1, color = "navy"),
-        axis.title = element_text(size=25,color = "navy", hjust = 0.5), # title adjustments
-        axis.text = element_text(size = 25,color = "navy",hjust = 0.5), # text adjustments
+  theme(plot.title = element_text(size = 20, hjust = 0.5, color ="cornsilk4"),
+        plot.subtitle = element_text(size =15,hjust = 0.5, lineheight = 1.1, color = "cornsilk4"),
+        axis.title = element_text(size=10,color = "black", hjust = 0.5), # title adjustments
+        axis.text = element_text(size = 10,color = "black",hjust = 0.5), # text adjustments
         panel.grid = element_line(linewidth = 0.35, linetype = FALSE), # background gridlines
         plot.margin = unit(c(1.0, 1.0, 1.0, 1.0), "cm"), # margin adjustments
         plot.background = element_rect(color = "white"))
   
- ggsave(here("Week_11","Output","FactorPlot.png")
+ ggsave(here("Week_11","Output","FactorPlot.png"))
 
+```
