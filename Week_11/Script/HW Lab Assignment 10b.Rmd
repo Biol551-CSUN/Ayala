@@ -1,0 +1,96 @@
+---
+title: "Lab HW Assignment"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE,
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+###  Working with Intertidal data 
+
+```{r}
+# Load the Libraries
+library(here)
+library(tidyverse)
+library(ggridges)
+library(hrbrthemes)
+library(janitor)
+```
+```{r}
+# Load the data
+intertidal<-read_csv(here("Week_11","Data","intertidaldata.csv")) # mainly going to use this data set
+lat<-read_csv(here("Week_11","Data","intertidaldata_latitude.csv"))
+# read.csv reads everything as factors so I will be reading them in as characters with read_csv and change them accordingly to factors
+
+```
+
+### Clean the Data
+```{r}
+intertidal_clean <- intertidal %>% 
+   filter(!is.na(`Quadrat`)) %>% # remove all of the NAs
+   count(`Quadrat`, sort = TRUE) %>% # sort the Algae in alphabetical order and then convert it into a factor to fix levels
+   mutate(`Quadrat` = factor(`Quadrat`)) %>% # changing Small.barnacles into a factor and then changing it's name
+   filter(n>20) # only want barnacle sizes 20 and above
+   # droplevels() # don't have any other levels besides lwo, mid and high
+   mutate(Quadrat = fct_recode(Quadrat, "Mid" = "Mid 1")) # change the name to Mid!
+
+intertidal_clean
+ 
+``` 
+### Clean the Data.Frame - Intertidal
+- Mid 1
+```{r}
+intertidal %>%
+  clean_names() # will clean any names that have misspellings or unnecessary numbers such as Mid 1
+```
+
+### Reorder the Levels!!
+```{r}
+ordersbarn <- factor(c("Low", "Mid", "High"), levels = c("Low", "Mid", "High")) # reordering the levels to an order that makes sense!
+
+
+ordersbarn
+```
+### Final Organziation of the Data Before Plotting
+```{r}
+glimpse(intertidal)
+interplot <- intertidal %>% # changing the name of the df
+  group_by(Quadrat,`Small Barnacles`) %>% # grouping small barnacles and the quadrat together
+  mutate(`Small Barnacles` = factor(`Small Barnacles`)) # ensuring it is still a factor by converting it to one
+```
+### Plotting Time
+```{r}
+ggplot(data = intertidal, 
+       aes(x= fct_reorder(Quadrat,Site), 
+           y = Site,
+           color = fct_reorder2(`Small Barnacles`,Quadrat,Site))) +
+  geom_density_ridges +
+  theme(text = element_text() +
+  labs(title='Locations of Small Barnacles When at Various Tide Times',
+       subtitle ='In ascending order from low, mid to high tide, there are',
+       x='Quadrat',
+       y='Site',  
+       color = "Small Barnacles") + 
+   theme_ipsum_pub() + # cute rainbow theme
+   theme_minimal() +
+   theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  scale_color_brewer(palette = "Blues") +
+  theme(plot.title = element_text(size = 40, hjust = 0.5, color ="navy"),
+        plot.subtitle = element_text(size =30,hjust = 0.5, lineheight = 1.1, color = "navy"),
+        axis.title = element_text(size=25,color = "navy", hjust = 0.5), # title adjustments
+        axis.text = element_text(size = 25,color = "navy",hjust = 0.5), # text adjustments
+        panel.grid = element_line(linewidth = 0.35, linetype = FALSE), # background gridlines
+        plot.margin = unit(c(1.0, 1.0, 1.0, 1.0), "cm"), # margin adjustments
+        plot.background = element_rect(color = "white"))
+  
+ ggsave(here("Week_11","Output","FactorPlot.png")
+
