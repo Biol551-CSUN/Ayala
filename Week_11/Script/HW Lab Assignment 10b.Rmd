@@ -69,17 +69,17 @@ interplot <- intertidal %>% # changing the name of the df
 ### Plotting Time
 ```{r}
 ggplot(data = interplot, 
-       aes(x= fct_reorder(Quadrat,`Small Barnacles`), 
-           y = Site,
-           fill = ("cornsilk3"))) +
-  geom_density_ridges(show.legend = FALSE) +
-  labs(title='Locations of Small Barnacles When at Various \n Tide Times',
-       subtitle =' In ascending order: tides are shown as low, mid and high.',
-       x='Quadrat',
-       y='Site',  
-       fill = "cornsilk3") + 
-   theme_minimal() +
-   theme(panel.grid.major = element_blank(),
+       aes(x= fct_reorder(Quadrat,`Small Barnacles`), # x axis (the factor)
+           y = Site, # y axis
+           fill = ("pink"))) +
+  geom_density_ridges(show.legend = FALSE) + # wanted a density plot
+  labs(title='Locations of Small Barnacles When at Various \n Tide Times', # chnages the title
+       subtitle =' In ascending order: tides are shown as low, mid and high.', # changes the subtitle
+       x='Quadrat', # the real x axis name
+       y='Site',  # the real y axis name
+       fill = "pink") +  # fill in density plot with pink color
+   theme_minimal() + # minimla theme, no lines
+   theme(panel.grid.major = element_blank(), # changes the size of all of the labs
         panel.grid.minor = element_blank()) +
   theme(plot.title = element_text(size = 20, hjust = 0.5, color ="cornsilk4"),
         plot.subtitle = element_text(size =15,hjust = 0.5, lineheight = 1.1, color = "cornsilk4"),
@@ -89,6 +89,6 @@ ggplot(data = interplot,
         plot.margin = unit(c(1.0, 1.0, 1.0, 1.0), "cm"), # margin adjustments
         plot.background = element_rect(color = "white"))
   
- ggsave(here("Week_11","Output","FactorPlot.png"))
+ ggsave(here("Week_11","Output","FactorPlot.png")) # save the plot!
 
 ```
