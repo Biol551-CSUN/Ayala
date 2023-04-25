@@ -1,0 +1,56 @@
+---
+title: "Iterative Coding Lab Homework"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+  prettydoc::html_pretty:
+    toc: TRUE
+    theme: architect
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+### for loop
+```{r}
+# load your libraries
+library(tidyverse)
+library(here)
+```
+
+```{r}
+timedata<-read_csv(here("Week_12", "Data","homework","TP1.csv")) # read in the file
+glimpse(timedata)
+```
+```{r}
+timepath<-here("Week_12", "Data", "homework") # point to the location on the computer of the folder
+files <- dir(path = timepath ,pattern = ".csv")
+files # tells me what files related to ".csv" are in that folder
+```
+```{r}
+timedata<-data.frame(matrix(nrow = length(files), ncol = 5)) # need to pre-allocate space and give df some column names
+colnames(timedata)<-c("filename","mean_temp", "mean_light", "sd_temp", "sd_light") 
+timedata
+
+raw_data<-read_csv(paste0(timepath,"/",files[1])) # test by reading in the first file and see if it works
+# file # 1,file #2, and all the way to 5
+head(raw_data)
+mean_temp<-mean(raw_data$Temp.C, na.rm = TRUE) # calculate the mean for temp first
+mean_temp
+```
+
+```{r}
+for (i in 1:length(files)){ # trying to loop over 1:4  which is the number of files 
+raw_data<-read_csv(paste0(timepath,"/",files[i]))
+timedata$filename[i]<-files[i] # file name
+timedata$mean_temp[i]<-mean(raw_data$Temp.C, na.rm =TRUE) # find the mean for Temp.C and make a col
+timedata$mean_light[i]<-mean(raw_data$Intensity.lux, na.rm =TRUE) # find the mean for light and make a col
+timedata$sd_temp[i]<-mean(raw_data$Temp.C, na.rm =TRUE) # fine the sd for temp and make a col
+timedata$sd_light[i]<-mean(raw_data$Intensity.lux, na.rm =TRUE) # find the sd for light and make a col
+} 
+timedata
+```
+
