@@ -13,3 +13,243 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE)
 ```
 
+```{r}
+# load your libraries
+library(tidyverse)
+library(here)
+```
+
+
+### For Loops
+- for loops are one way to run an iterative process (do something over and over again). 
+- However, with the tidyverse you can avoid needing loops for almost any basic coding needs.
+- Where it does come in handy is in population modeling and Bayesian modeling, for example. 
+- Also, it is integral to programming and is happening "under the hood" whether you use them or not.
+- For loops have two major parts: an indexing statement and a command (or set of commands) to repeat. The coding is in base R.
+- The command looks like this:
+for(index in sequence){
+command to repeat}
+
+
+### Simple for Loop
+```{r}
+print(paste("The year is", 2000)) # code for one year
+```
+
+### Put it in a For Loop
+```{r}
+years<-c(2015:2021)
+for (i in years){ # set up the for loop where i is the index
+  print(paste("The year is", i)) # loop over i
+}
+```
+### Simple For Loop
+- What we just did printed something over and over, but it did not save it anywhere. Let's say you want to save a new vector with all the years. 
+- To do this we need to pre-allocate space and tell R where it is going to be saved. 
+- Create an empty dataframe called year_data with columns for year and year_name .
+```{r}
+#Pre-allocate space for the for loop
+# empty matrix
+year_data<-data.frame(matrix(ncol = 2, nrow = length(years)))
+# use tibble as well
+# add column names
+colnames(year_data)<-c("year", "year_name")
+year_data
+```
+### Add the for loop
+-One line at a time. Let's first add in the column that is going to have all the names in it. Notice that I added an index i in the column name.
+- I also am having the index go from 1:length(years), which is 1:7. I use length() because it allows me to change the number of years in the vector without having to change the for loop
+
+### fill in the year column
+```{r}
+for (i in 1:length(years)){ # set up the for loop where i is the index
+  year_data$year_name[i]<-paste("The year is", years[i]) # loop over year name
+  year_data$year[i]<-years[i] # loop over year
+}
+year_data
+```
+
+### Using loops to read in multiple .csv files
+- Let's say you have multiple data files where you want to perform the same action to each. You can use a for loop to do this.
+
+- In the data folder you will see a subfolder called cond_data. Here I have 3 files of salinity and temperature data collected from Mo'orea from a spatial survey.
+
+- Read in one of the files so that you can see what it looks like.
+```{r}
+saldata<-read_csv(here("Week_12", "Data","CondData","011521_CT316_1pcal.csv"))
+glimpse(saldata)
+```
+### Reads all of the Files w/ For Loop 
+```{r}
+# point to the location on the computer of the folder
+CondPath<-here("Week_12", "Data", "CondData")
+# list all the files in that path with a specific pattern
+# In this case we are looking for everything that has a .csv in the filename
+# you can use regex to be more specific if you are looking for certain patterns in filenames
+files <- dir(path = CondPath,pattern = ".csv")
+files
+```
+### Pre-Allocate Space for the Loop
+- calculate mean temperature, salinity from each file
+```{r}
+# pre-allocate space
+# make an empty data frame that has one row for each file and 3 columns
+cond_data<-data.frame(matrix(nrow = length(files), ncol = 3))
+# give the dataframe column names
+colnames(cond_data)<-c("filename","mean_temp", "mean_sal")
+cond_data
+
+raw_data<-read_csv(paste0(CondPath,"/",files[1])) # test by reading in the first file and see if it works
+# file #1,file #2 file #3
+head(raw_data)
+mean_temp<-mean(raw_data$Temperature, na.rm = TRUE) # calculate the mean
+mean_temp
+```
+
+### Turn it into a for loop
+```{r}
+for (i in 1:length(files)){ # loop over 1:3 the number of files
+}
+```
+
+### Add in the loop over the raw data
+```{r}
+for (i in 1:length(files)){ # loop over 1:3 the number of files 
+raw_data<-read_csv(paste0(CondPath,"/",files[i]))
+glimpse(raw_data)
+}
+
+```
+
+### Add in the columns
+```{r}
+for (i in 1:length(files)){ # loop over 1:3 the number of files 
+raw_data<-read_csv(paste0(CondPath,"/",files[i]))
+#glimpse(raw_data)
+cond_data$filename[i]<-files[i]
+cond_data$mean_temp[i]<-mean(raw_data$Temperature, na.rm =TRUE)
+cond_data$mean_sal[i]<-mean(raw_data$Salinity, na.rm =TRUE)
+} 
+cond_data
+
+```
+### Using {purrr}
+-Now, I will teach you to do the exact same thing, but with tidyverse style language.
+
+-"purrr enhances R’s functional programming (FP) toolkit by providing a complete and consistent set of tools for working with functions and vectors. If you’ve never heard of FP before, the best place to start is the family of map() functions which allow you to replace many for loops with code that is both more succinct and easier to read. 
+
+- The best place to learn about the map() functions is the iteration chapter in R for data science."
+
+- " ...it’s designed to make your pure functions purrr." - Hadley Wickham
+
+### Map Functions
+-The pattern of looping over a vector, doing something to each element and saving the results is so common that the purrr package provides a family of functions to do it for you. There is one function for each type of output:
+
+map() makes a list.
+map_lgl() makes a logical vector.
+map_int() makes an integer vector.
+map_dbl() makes a double vector.
+map_chr() makes a character vector.
+map_df() makes a dataframe
+
+- Each function takes a vector as input, applies a function to each piece, and then returns a new vector that’s the same length (and has the same names) as the input.
+
+### Simple Example
+- There 3 ways to do the same thing in a map() function
+- Use a canned function that already exists
+- Let's calculate the mean from a set of random numbers and do it 10 times
+- Create a vector from 1:10
+```{r}
+1:10 # a vector from 1 to 10 (we are going to do this 10 times)
+```
+for each time 1:10 make a vector of 15 random numbers based on a normal distribution
+```{r}
+1:10 %>% # a vector from 1 to 10 (we are going to do this 10 times) %>% # the vector to iterate over
+  map(rnorm, n = 15) # calculate 15 random numbers based on a normal distribution in a list
+```
+```{r}
+1:10 %>% # a vector from 1 to 10 (we are going to do this 10 times) %>% # the vector to iterate over
+  map(rnorm, n = 15)  %>% # calculate 15 random numbers based on a normal distribution in a list 
+  map_dbl(mean) # calculate the mean. It is now a vector which is type "double"
+# double and numeric are the same thing!!
+
+```
+### Different Notation - Same as for loops though
+- Make your own function
+```{r}
+1:10 %>% # list 1:10
+  map(function(x) rnorm(15, x)) %>% # make your own function
+  # x = iteration
+  map_dbl(mean)
+```
+
+### Use the formula when you want to change the arguments within the function
+```{r}
+1:10 %>%
+  map(~ rnorm(15, .x)) %>% # changes the arguments inside the function
+  map_dbl(mean)
+```
+
+### calculate the means
+```{r}
+data<-files %>%
+  set_names()%>% # set's the id of each list to the file name
+  map_df(read_csv,.id = "filename") %>% # map everything to a dataframe and put the id in a column called filename
+  group_by(filename) %>%
+  summarise(mean_temp = mean(Temperature, na.rm = TRUE),
+            mean_sal = mean(Salinity,na.rm = TRUE))
+data
+```
+
+### birng in the files using purr instead of a loop
+```{r}
+# point to the location on the computer of the folder
+CondPath<-here("Week_12", "data", "cond_data")
+files <- dir(path = CondPath,pattern = ".csv")
+files
+
+files <- dir(path = CondPath,pattern = ".csv", full.names = TRUE)
+#save the entire path name
+files
+```
+
+### read in the files
+```{r}
+data<-files %>%
+  set_names()%>% # set's the id of each list to the file name
+  map_df(read_csv,.id = "filename") # map everything to a dataframe and put the id in a column called filename
+data
+```
+### calculate means
+```{r}
+data<-files %>%
+  set_names()%>% # set's the id of each list to the file name
+  map_df(read_csv,.id = "filename") # map everything to a dataframe and put the id in a column called filename
+data
+```
+
+### other uses
+Maps and loops are awesome for more complicated processes too. For example, you could plot something and save it automatically from each file using similar code.
+
+Read these chapters in R4DS and Advanced R to see all the fancy shortcuts you can do with the purrr package
+
+
+----------------------------------------------
+```{r}
+library(gganatogram)
+gganatogram(data = hgFemale_key, 
+            organism = "human", sex = "female",
+            fill = "colour", fillOutline = "#a6bddb") +
+  theme_void() + 
+  coord_fixed()
+```
+```{r}
+hgMale_key %>%
+  filter(type %in% "nervous_system") %>%
+  gganatogram(organism = "human", sex = "male",
+              fill = "colour", outline = FALSE) +
+  theme_void() + 
+  coord_fixed()
+```
+
+
