@@ -150,7 +150,10 @@ pointer-events: auto;
 <div id="TOC" class="toc">
 <div class="inner">
 <ul>
-<li><a href="#for-loop" id="toc-for-loop">for loop</a></li>
+<li><a href="#making-a-for-loop" id="toc-making-a-for-loop">making a for
+loop</a></li>
+<li><a href="#using-map-functions" id="toc-using-map-functions">using
+map() functions</a></li>
 </ul>
 </div>
 </div>
@@ -158,8 +161,8 @@ pointer-events: auto;
 <div id="content-wrapper">
   <div class="inner clearfix">
     <section id="main-content">
-<div id="for-loop" class="section level3">
-<h3>for loop</h3>
+<div id="making-a-for-loop" class="section level3">
+<h3>making a for loop</h3>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load your libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div>
@@ -216,6 +219,36 @@ pointer-events: auto;
 ## 2  TP2.csv  13.17498  5603.1554 13.17498 5603.1554
 ## 3  TP3.csv  13.10386  5605.0705 13.10386 5605.0705
 ## 4  TP4.csv  13.22150   655.1037 13.22150  655.1037</code></pre>
+</div>
+<div id="using-map-functions" class="section level3">
+<h3>using map() functions</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># point to the location on the computer of the folder</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>timepath<span class="ot">&lt;-</span><span class="fu">here</span>(<span class="st">&quot;Week_12&quot;</span>, <span class="st">&quot;Data&quot;</span>, <span class="st">&quot;homework&quot;</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>timefiles <span class="ot">&lt;-</span> <span class="fu">dir</span>(<span class="at">path =</span> timepath,<span class="at">pattern =</span> <span class="st">&quot;.csv&quot;</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># OR</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>timefiles <span class="ot">&lt;-</span> <span class="fu">dir</span>(<span class="at">path =</span> timepath,<span class="at">pattern =</span> <span class="st">&quot;.csv&quot;</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="co"># save path name in its entirety</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>timefiles</span></code></pre></div>
+<pre><code>## [1] &quot;C:/Users/nikky/OneDrive/Documents/repositories SP 23 BIOL551/Ayala/Week_12/Data/homework/TP1.csv&quot;
+## [2] &quot;C:/Users/nikky/OneDrive/Documents/repositories SP 23 BIOL551/Ayala/Week_12/Data/homework/TP2.csv&quot;
+## [3] &quot;C:/Users/nikky/OneDrive/Documents/repositories SP 23 BIOL551/Ayala/Week_12/Data/homework/TP3.csv&quot;
+## [4] &quot;C:/Users/nikky/OneDrive/Documents/repositories SP 23 BIOL551/Ayala/Week_12/Data/homework/TP4.csv&quot;</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>timedata<span class="ot">&lt;-</span>timefiles <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>()<span class="sc">%&gt;%</span> <span class="co"># sets up the id of each list to the file name</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_df</span>(read_csv,<span class="at">.id =</span> <span class="st">&quot;filename&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># map everything to a df and put the id in a column called filename</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(filename) <span class="sc">%&gt;%</span> <span class="co"># want to group by file name</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_temp =</span> <span class="fu">mean</span>(Temp.C, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean_light =</span> <span class="fu">mean</span>(Intensity.lux,<span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd_temp =</span> <span class="fu">sd</span>(Temp.C,<span class="at">na.rm =</span><span class="cn">TRUE</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd_light =</span> <span class="fu">sd</span>(Intensity.lux, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>timedata</span></code></pre></div>
+<pre><code>## # A tibble: 4 × 5
+##   filename                                       mean_…¹ mean_…² sd_temp sd_li…³
+##   &lt;chr&gt;                                            &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 C:/Users/nikky/OneDrive/Documents/repositorie…    13.3    427.    2.32   1661.
+## 2 C:/Users/nikky/OneDrive/Documents/repositorie…    13.2   5603.    2.31  11929.
+## 3 C:/Users/nikky/OneDrive/Documents/repositorie…    13.1   5605.    2.32  12101.
+## 4 C:/Users/nikky/OneDrive/Documents/repositorie…    13.2    655.    2.27   2089.
+## # … with abbreviated variable names ¹​mean_temp, ²​mean_light, ³​sd_light</code></pre>
 </div>
     </section>
   </div>
