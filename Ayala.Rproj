@@ -11,3 +11,8 @@ Encoding: UTF-8
 
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
+
+BuildType: Package
+PackageUseDevtools: Yes
+PackagePath: Breast Cancer Risk Reduction
+PackageInstallArgs: --no-multiarch --with-keep.source

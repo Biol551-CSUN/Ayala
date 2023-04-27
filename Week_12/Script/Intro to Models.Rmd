@@ -1,0 +1,183 @@
+---
+title: "Intro to Models"
+author: "Nicole Ayala"
+date: "`r Sys.Date()`"
+output: 
+ prettydoc::html_pretty:
+    toc: TRUE
+    theme: architect
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+### Load Your Libraries
+```{r}
+# load your libraries
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+library(broom)
+library(performance) 
+library(modelsummary)
+library(wesanderson)
+library(tidymodels)
+```
+### Anatomy of a Basic Linear Model
+- To run a simple linear model you use the following formula:
+
+_mod<-lm(y~x, data = df)_
+
+lm = linear model, y = dependent variable, x = independent variable(s), df = dataframe.
+
+~ = is a function of
+
+You read this as y is a function of x
+
+**Multiple regression**
+mod<-lm(y~x1 + x2, data = df)
+
+**Interaction term**
+mod<-lm(y~x1*x2, data = df) the * will compute x1+x2+x1:x2
+### Model the penguin dataset
+- We've tidied and visualized the data and have our set of hypotheses that we want to test. Now we can start modeling...
+
+### Model the Penguin Dataset
+```{r}
+Peng_mod<-lm(bill_length_mm ~ bill_depth_mm*species, data = penguins)
+```
+
+### Check Model Assumptions with Performance
+- Check model assumptions with performace
+ALWAYS check the assumptions of your specific model. 
+- Make sure you know what your model is doing behind the scenes and that you meet all assumptions before interpreting your results. 
+- The {performance} package makes this super easy.
+- Good for statistics!
+```{r}
+check_model(Peng_mod) # check assumptions of an lm model
+```
+### View results in base R
+- ANOVA Table
+```{r}
+anova(Peng_mod)
+```
+
+- 0.000 = significant
+- .01 = insignificant
+
+
+### View results with broom
+- These results are not in a clean form and it is hard to extract specific values. Using {broom} we can "tidy" the results so that it is easier to view and extract. 
+- Functions tidy(), glance(), and augment() will clean up your results
+```{r}
+
+coeffs<-tidy(Peng_mod) # just put tidy() around it
+coeffs # Tidy coefficients
+```
+- glance extracts R-squared, AICs, etc of the model
+```{r}
+
+results<-glance(Peng_mod) 
+results# tidy r2, etc
+```
+-augment add residuals and predicted values to your original data and requires that you put both the model and data, fits,
+```{r}
+resid_fitted<-augment(Peng_mod)
+resid_fitted # tidy residuals, etc
+```
+### Results in Model Summary
+-{modelsummary} creates tables and plots to summarize statistical models and data in R.
+- modelsummary includes two families of functions:
+
+**Model Summary**
+- modelsummary: Regression tables with side-by-side models.
+- modelsummary_wide: Regression tables for categorical response models or grouped coefficients.
+- modelplot: Coefficient plots.
+
+**Data Summary**
+- datasummary: Powerful tool to create (multi-level) cross-tabs and data summaries.
+- datasummary_balance: Balance tables with subgroup statistics and difference in means (aka “Table 1”).
+- datasummary_correlation: Correlation tables.
+- datasummary_skim: Quick overview (“skim”) of a dataset.
+- datasummary_df: Turn dataframes into nice tables with titles, notes, etc.
+
+- Export summary tables to word, markdown, or tex document. You can also modify the tables to make them pub quality.
+
+- Let's compare the Peng_mod with one that does not have species as an interaction term.
+
+```{r}
+
+Peng_mod_noX<-lm(bill_length_mm ~ bill_depth_mm, data = penguins) # NEW MODEL
+
+models<-list("Model with interaction" = Peng_mod, # make a list of models and name them
+             "Model with no interaction" = Peng_mod_noX)
+
+modelsummary(models, output = here("Week_12","output","table.docx")) # save the results as a .docx
+```
+
+```{r}
+modelplot(models) +
+    labs(x = 'Coefficients', 
+         y = 'Term names') +
+    scale_color_manual(values = wes_palette('Darjeeling1'))
+```
+
+### Many Models with purrr, dplyr, and broom
+- Let's say you want to plot and compare lots of different models at the same time and view the results. For example, instead of using species as an interaction term, let's make an individual model for every species.
+
+- We can essentially make a set of lists that have each dataset that we want to model and use the map functions to run the same model to every dataset. We will test it step by step
+
+- First, let's call the penguin data and create a list for the data by each species. We do this using nest(). We are going to nest the data by species.
+```{r}
+ models<- penguins %>%
+  ungroup() %>% # the penguin data are grouped so we need to ungroup them
+  nest(-species) %>% # nest all the data by species
+  mutate(fit = map(data, ~lm(bill_length_mm~body_mass_g, data = .)))
+# . = take this data set
+models
+models$fit
+```
+
+- View the results. First, let's mutate the models list so that we have a tidy coefficient dataframe (using tidy()) and a tidy model results dataframe (using glance())
+```{r}
+ results<-models %>%
+   mutate(coeffs = map(fit, tidy), # look at the coefficients
+   modelresults = map(fit, glance)) %>%  # R2 and others
+   select(species, coeffs, modelresults) %>% # only keep the results
+   unnest() # put it back in a dataframe and specify which columns to unnest
+results
+```
+
+```{r}
+#view(results) # view the results
+```
+
+
+### Tidymodels
+- Like almost everything else there is a modeling package that uses the tidyverse language to create models. It is called {tidymodels}. For full transparency, I have not used it, but it looks cool and seems particularly useful for machine learning style modeling.
+
+- In tidymodels you start by specifying the functional form using the parsnip package. In our case, we will use a linear regression which is coded like this:
+```{r}
+lm_mod <- linear_reg() %>%
+  set_engine("lm") %>%
+  fit(bill_length_mm ~ bill_depth_mm*species, data = penguins) %>%
+  tidy()
+lm_mod
+```
+### Pipe to a plot
+```{r}
+lm_mod<-linear_reg() %>%
+  set_engine("lm") %>%
+  fit(bill_length_mm ~ bill_depth_mm*species, data = penguins) %>%
+  tidy() %>%
+  ggplot()+
+    geom_point(aes(x = term, y = estimate))+
+    geom_errorbar(aes(x = term, ymin = estimate-std.error,
+                      ymax = estimate+std.error), width = 0.1 )+
+  coord_flip()
+lm_mod
+```
+
